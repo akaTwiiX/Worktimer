@@ -1,0 +1,41 @@
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/worktimer/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/worktimer/favicon.ico",
+          "/worktimer/index.html",
+          "/worktimer/manifest.json",
+          "/worktimer/*.css",
+          "/worktimer/*.js"
+        ]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/worktimer/assets/**",
+          "/worktimer/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|mp4|webm|ogg)"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "firebase-api",
+      "urls": ["https://firestore.googleapis.com/**"],
+      "cacheConfig": {
+        "maxSize": 100,
+        "maxAge": "1d",
+        "strategy": "freshness"
+      }
+    }
+  ]
+}
