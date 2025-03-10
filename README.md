@@ -2,6 +2,21 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.2.
 
+## Required
+
+- NodeJS 20
+- [pnpm](https://pnpm.io/installation#using-other-package-managers)
+
+## Environment file
+
+1. Create the env file:
+
+    ```bash
+    cd ./src/environments
+    cp environment.ts environment.dev.ts
+    cd ../..
+    ```
+
 ## Development server
 
 To start a local development server, run:
