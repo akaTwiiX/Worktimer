@@ -1,17 +1,17 @@
 {
   "$schema": "./node_modules/@angular/service-worker/config/schema.json",
-  "index": "/worktimer/index.html",
+  "index": "/Worktimer/index.html",
   "assetGroups": [
     {
       "name": "app",
       "installMode": "prefetch",
       "resources": {
         "files": [
-          "/worktimer/favicon.ico",
-          "/worktimer/index.html",
-          "/worktimer/manifest.json",
-          "/worktimer/*.css",
-          "/worktimer/*.js"
+          "/Worktimer/favicon.ico",
+          "/Worktimer/index.html",
+          "/Worktimer/manifest.json",
+          "/Worktimer/*.css",
+          "/Worktimer/*.js"
         ]
       }
     },
@@ -21,8 +21,8 @@
       "updateMode": "prefetch",
       "resources": {
         "files": [
-          "/worktimer/assets/**",
-          "/worktimer/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|mp4|webm|ogg)"
+          "/Worktimer/assets/**",
+          "/Worktimer/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|mp4|webm|ogg)"
         ]
       }
     }
