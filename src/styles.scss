@@ -37,6 +37,12 @@ body {
     flex-direction: column;
     text-align: center;
     font-size: 14px;
+    white-space: pre-wrap;
+    /* Erlaubt Zeilenumbrüche an Whitespace */
+    word-break: break-word;
+    /* Bricht Wörter, wenn nötig */
+    max-width: 100%;
+    /* Begrenzt die Breite auf den Container */
 
     small {
         font-size: 10px;
