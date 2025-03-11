@@ -1,14 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { FullCalendarComponent, FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { collection, onSnapshot, addDoc, deleteDoc, doc, getFirestore, query, where, updateDoc } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, query, where } from 'firebase/firestore';
 import { db } from '../firebase-config';
 import { MatDialog } from '@angular/material/dialog';
 import { EventDialogComponent } from '../event-dialog/event-dialog.component';
-
 
 export interface WorkdayEvent {
   id?: string;
@@ -23,7 +22,7 @@ export interface WorkdayEvent {
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
 })
-export class CalendarComponent {
+export class CalendarComponent implements OnDestroy {
   @ViewChild('calendar') calendarRef!: FullCalendarComponent;
 
   calendarOptions: CalendarOptions = {
@@ -44,7 +43,8 @@ export class CalendarComponent {
     },
     eventStartEditable: true,
     eventDurationEditable: true,
-    selectMirror: true,
+    selectMirror: false,
+    unselectAuto: true,
     longPressDelay: 500,
     eventLongPressDelay: 500,
     firstDay: 1,
@@ -54,9 +54,9 @@ export class CalendarComponent {
   };
 
   private unsubscribe: (() => void) | null = null;
+  private isSelecting = false; // Flag, um select-Prozess zu markieren
 
-  constructor(private dialog: MatDialog) {
-  }
+  constructor(private dialog: MatDialog) { }
 
   handleDatesSet(dateInfo: any) {
     const start = new Date(dateInfo.startStr);
@@ -85,42 +85,67 @@ export class CalendarComponent {
         allDay: doc.data()['allDay'],
         backgroundColor: doc.data()['backgroundColor'],
         borderColor: doc.data()['backgroundColor'],
+        textColor: '#000000'
       }));
       this.calendarOptions.events = events;
+    }, (error) => {
+      console.error('Fehler beim Laden der Events:', error);
     });
   }
 
   async handleDateSelect(selectInfo: any) {
-    const dialogRef = this.dialog.open(EventDialogComponent, { width: '250px', data: { isNew: true } });
+    const calendarApi = this.calendarRef.getApi();
+    this.isSelecting = true;
+
+    const dialogRef = this.dialog.open(EventDialogComponent, {
+      width: '250px',
+      data: { isNew: true },
+      autoFocus: false
+    });
 
     dialogRef.afterClosed().subscribe(async result => {
-      if (!result) return;
+      if (!result) {
+        calendarApi.unselect();
+        this.isSelecting = false;
+        return;
+      }
 
       const newEvent = {
         title: result.title,
         start: selectInfo.startStr,
         end: selectInfo.endStr,
         allDay: selectInfo.allDay,
-        backgroundColor: result.backgroundColor
+        backgroundColor: result.backgroundColor,
+        borderColor: result.backgroundColor,
+        textColor: '#000000'
       };
 
-      await addDoc(collection(db, 'events'), newEvent);
+      try {
+        await addDoc(collection(db, 'events'), newEvent);
+        calendarApi.unselect();
+      } catch (error) {
+        console.error('Fehler beim Erstellen des Events:', error);
+        calendarApi.unselect();
+      }
+      this.isSelecting = false;
     });
   }
+
 
   async handleEventClick(clickInfo: any) {
     const event = clickInfo.event;
     const dialogRef = this.dialog.open(EventDialogComponent, {
       width: '250px',
       data: {
-        isNew: false, // Kennzeichnet ein bestehendes Event
+        isNew: false,
         id: event.id,
         title: event.title,
         start: event.startStr,
         end: event.endStr,
         allDay: event.allDay,
         backgroundColor: event.backgroundColor
-      }
+      },
+      autoFocus: false
     });
 
     dialogRef.afterClosed().subscribe(async result => {
@@ -128,23 +153,38 @@ export class CalendarComponent {
 
       const eventDoc = doc(db, 'events', event.id);
 
-      if (result.delete) {
-        await deleteDoc(eventDoc);
-      } else {
-        const updatedEvent = {
-          title: result.title,
-          start: result.start || event.startStr,
-          end: result.end || event.endStr,
-          allDay: result.allDay ?? event.allDay,
-          backgroundColor: result.backgroundColor
-        };
-        await updateDoc(eventDoc, updatedEvent);
+      try {
+        if (result.delete) {
+          await deleteDoc(eventDoc);
+        } else {
+          const updatedEvent = {
+            title: result.title,
+            start: result.start || event.startStr,
+            end: result.end || event.endStr,
+            allDay: result.allDay ?? event.allDay,
+            backgroundColor: result.backgroundColor,
+            borderColor: result.backgroundColor,
+            textColor: '#000000'
+          };
+          await updateDoc(eventDoc, updatedEvent);
+        }
+      } catch (error) {
+        console.error('Fehler beim Bearbeiten/Löschen des Events:', error);
       }
     });
   }
 
   handleDateClick(info: any) {
-    this.calendarRef.getApi().changeView('timeGridDay', info.dateStr);
+    const calendarApi = this.calendarRef.getApi();
+
+    if (!this.isSelecting) {
+      calendarApi.changeView('timeGridDay', info.dateStr);
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
   }
 }
-
