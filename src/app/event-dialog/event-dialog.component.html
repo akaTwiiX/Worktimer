@@ -1,0 +1,30 @@
+<div class="dialog">
+    <h3>{{ data.isNew ? 'Neues Event' : 'Event bearbeiten' }}</h3>
+    <mat-form-field>
+        <mat-label>Ereignisname</mat-label>
+        <input type="text" matInput [(ngModel)]="eventData.title">
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Deine Kasse</mat-label>
+        <input type="number" matInput [(ngModel)]="eventData.selection">
+    </mat-form-field>
+
+
+    <mat-radio-group aria-labelledby="example-radio-group-label" class="radio-btn"
+        [(ngModel)]="eventData.backgroundColor">
+        @for (color of colors; track color) {
+        <mat-radio-button class="example-radio-button" [value]="color.value">
+            <div class="color" [style.background-color]="color.value"></div>
+        </mat-radio-button>
+        }
+    </mat-radio-group>
+
+    <div mat-dialog-actions class="btn-container">
+        <button mat-button color="primary" (click)="onSave()">Speichern</button>
+        @if (!data.isNew) {
+        <button mat-button color="warn" (click)="onDelete()">Löschen</button>
+        }
+        <button mat-button (click)="onCancel()">Abbrechen</button>
+    </div>
+</div>

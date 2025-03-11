@@ -1,0 +1,24 @@
+.dialog {
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    gap: 16px;
+
+    .radio-btn {
+        display: flex;
+        // flex-direction: column;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .btn-container {
+        display: flex;
+        justify-content: space-between;
+
+    }
+
+    .color {
+        height: 30px;
+        width: 50px;
+    }
+}
