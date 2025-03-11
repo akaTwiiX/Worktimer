@@ -50,7 +50,10 @@ export class CalendarComponent implements OnDestroy {
     firstDay: 1,
     slotLabelFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
     eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
-    datesSet: this.handleDatesSet.bind(this)
+    datesSet: this.handleDatesSet.bind(this),
+    eventContent: (arg) => {
+      return { html: arg.event.title }; // Rendert den title-String als HTML
+    }
   };
 
   private unsubscribe: (() => void) | null = null;

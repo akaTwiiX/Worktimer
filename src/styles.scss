@@ -11,7 +11,7 @@ body {
 }
 
 .fc .fc-daygrid-day-number {
-    color: black !important;
+    color: black;
 }
 
 .fc-event-title {
@@ -23,10 +23,22 @@ body {
 }
 
 .fc-col-header-cell-cushion {
-    color: black !important;
+    color: black;
 }
 
 .fc-day-today {
-    background-color: rgba(0, 255, 76, 0.3) !important;
+    background-color: #e0e0e0 !important;
     /* Helles Orange */
+}
+
+.fc-event-main {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    font-size: 14px;
+
+    small {
+        font-size: 10px;
+    }
 }

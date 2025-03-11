@@ -23,9 +23,10 @@ export class EventDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     if (!this.data.isNew) {
-      const textData = this.data.title.split('\n Kasse:');
-      this.eventData.title = textData[0].trim();
-      this.eventData.selection = Number(textData[1]);
+      const textData = this.data.title.split('\n <small>Kasse:</small>');
+      const formattedTime = textData[0].replace('<br>', '-').trim();
+      this.eventData.title = formattedTime;
+      this.eventData.selection = textData[1] ? Number(textData[1]) : 0;
       this.eventData.backgroundColor = this.data.backgroundColor;
     }
 
@@ -42,8 +43,13 @@ export class EventDialogComponent {
   onSave(): void {
     if (this.eventData.title == "" && this.eventData.backgroundColor == "") return;
 
+    let formattedTime = this.eventData.title;
+
+    if (this.eventData.title.includes('-'))
+      formattedTime = formattedTime.replace('-', '<br>');
+
     this.dialogRef.close({
-      title: this.eventData.selection == 0 ? this.eventData.title : `${this.eventData.title} \n Kasse: ${this.eventData.selection}`,
+      title: this.eventData.selection == 0 ? this.eventData.title : `${formattedTime} \n <small>Kasse:</small> ${this.eventData.selection}`,
       backgroundColor: this.eventData.backgroundColor,
       start: this.data.start,
       end: this.data.end,

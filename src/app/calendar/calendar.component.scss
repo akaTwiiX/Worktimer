@@ -19,7 +19,7 @@ body {
 full-calendar {
     width: 100%;
     max-width: 100vw;
-    height: 70%;
+    height: 90%;
 }
 
 @media (max-width: 600px) {
@@ -30,12 +30,10 @@ full-calendar {
 
     .fc-button {
         padding: 4px;
-        /* Kleinere Buttons für Touch */
     }
 
     .fc-daygrid-day {
         min-height: 50px;
-        /* Monatsansicht: Mindesthöhe für Tage */
     }
 
 
