@@ -10,7 +10,23 @@ body {
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
+.fc .fc-daygrid-day-number {
+    color: black !important;
+}
+
 .fc-event-title {
     width: 100%;
     text-align: center;
+    font-size: 14px;
+    white-space: pre-wrap;
+    color: black;
+}
+
+.fc-col-header-cell-cushion {
+    color: black !important;
+}
+
+.fc-day-today {
+    background-color: rgba(0, 255, 76, 0.3) !important;
+    /* Helles Orange */
 }
