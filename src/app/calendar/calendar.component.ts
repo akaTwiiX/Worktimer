@@ -1,16 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { FullCalendarModule } from '@fullcalendar/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FullCalendarComponent, FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { collection, onSnapshot, addDoc, deleteDoc, doc, getFirestore, query, where } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, deleteDoc, doc, getFirestore, query, where, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase-config';
+import { MatDialog } from '@angular/material/dialog';
+import { EventDialogComponent } from '../event-dialog/event-dialog.component';
 
 
 export interface WorkdayEvent {
   id?: string;
-  date: string; // ISO-String
+  date: string;
   type: 'Arbeitszeit' | 'Freier Tag';
 }
 
@@ -22,14 +24,17 @@ export interface WorkdayEvent {
   styleUrls: ['./calendar.component.scss']
 })
 export class CalendarComponent {
+  @ViewChild('calendar') calendarRef!: FullCalendarComponent;
+
   calendarOptions: CalendarOptions = {
-    initialView: 'timeGridWeek',
+    initialView: 'dayGridMonth',
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     editable: true,
     selectable: true,
     events: [],
     select: this.handleDateSelect.bind(this),
     eventClick: this.handleEventClick.bind(this),
+    dateClick: this.handleDateClick.bind(this),
     locale: 'de',
     timeZone: 'Europe/Berlin',
     headerToolbar: {
@@ -45,30 +50,25 @@ export class CalendarComponent {
     firstDay: 1,
     slotLabelFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
     eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
-    datesSet: this.handleDatesSet.bind(this) // Neu: Reagiert auf sichtbaren Zeitraum
+    datesSet: this.handleDatesSet.bind(this)
   };
 
-  private unsubscribe: (() => void) | null = null; // Zum Abbestellen der vorherigen Abfrage
+  private unsubscribe: (() => void) | null = null;
 
-  constructor() {
-    // Initiale Daten werden bei "datesSet" geladen
+  constructor(private dialog: MatDialog) {
   }
 
-  // Sichtbarer Zeitraum hat sich geändert (Monat gewechselt)
   handleDatesSet(dateInfo: any) {
-    const start = new Date(dateInfo.startStr); // Anfang des sichtbaren Bereichs
-    const end = new Date(dateInfo.endStr);    // Ende des sichtbaren Bereichs
+    const start = new Date(dateInfo.startStr);
+    const end = new Date(dateInfo.endStr);
 
-    // Monatsgrenzen berechnen
     const monthStart = new Date(start.getFullYear(), start.getMonth(), 1);
     const monthEnd = new Date(end.getFullYear(), end.getMonth() + 1, 0, 23, 59, 59);
 
-    // Vorherige Abfrage abbestellen, falls vorhanden
     if (this.unsubscribe) {
       this.unsubscribe();
     }
 
-    // Firestore-Abfrage für den aktuellen Monat
     const eventsCollection = collection(db, 'events');
     const q = query(
       eventsCollection,
@@ -76,7 +76,6 @@ export class CalendarComponent {
       where('start', '<=', monthEnd.toISOString())
     );
 
-    // Echtzeit-Listener für den Monat
     this.unsubscribe = onSnapshot(q, (snapshot) => {
       const events: EventInput[] = snapshot.docs.map(doc => ({
         id: doc.id,
@@ -84,37 +83,68 @@ export class CalendarComponent {
         start: doc.data()['start'],
         end: doc.data()['end'],
         allDay: doc.data()['allDay'],
-        backgroundColor: doc.data()['backgroundColor']
+        backgroundColor: doc.data()['backgroundColor'],
+        borderColor: doc.data()['backgroundColor'],
       }));
       this.calendarOptions.events = events;
     });
   }
 
-  // Neues Ereignis hinzufügen
   async handleDateSelect(selectInfo: any) {
-    const title = prompt('Ereignisname (z. B. Arbeitszeit oder Freier Tag):');
-    const calendarApi = selectInfo.view.calendar;
-    calendarApi.unselect();
+    const dialogRef = this.dialog.open(EventDialogComponent, { width: '250px', data: { isNew: true } });
 
-    if (title) {
+    dialogRef.afterClosed().subscribe(async result => {
+      if (!result) return;
+
       const newEvent = {
-        title,
+        title: result.title,
         start: selectInfo.startStr,
         end: selectInfo.endStr,
         allDay: selectInfo.allDay,
-        backgroundColor: title === 'Freier Tag' ? '#ff4444' : '#3788d8'
+        backgroundColor: result.backgroundColor
       };
+
       await addDoc(collection(db, 'events'), newEvent);
-      // Events werden automatisch über den Listener aktualisiert
-    }
+    });
   }
 
-  // Ereignis löschen
   async handleEventClick(clickInfo: any) {
-    if (confirm(`Möchtest du "${clickInfo.event.title}" löschen?`)) {
-      await deleteDoc(doc(db, 'events', clickInfo.event.id));
-      // Events werden automatisch über den Listener aktualisiert
-    }
+    const event = clickInfo.event;
+    const dialogRef = this.dialog.open(EventDialogComponent, {
+      width: '250px',
+      data: {
+        isNew: false, // Kennzeichnet ein bestehendes Event
+        id: event.id,
+        title: event.title,
+        start: event.startStr,
+        end: event.endStr,
+        allDay: event.allDay,
+        backgroundColor: event.backgroundColor
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(async result => {
+      if (!result) return;
+
+      const eventDoc = doc(db, 'events', event.id);
+
+      if (result.delete) {
+        await deleteDoc(eventDoc);
+      } else {
+        const updatedEvent = {
+          title: result.title,
+          start: result.start || event.startStr,
+          end: result.end || event.endStr,
+          allDay: result.allDay ?? event.allDay,
+          backgroundColor: result.backgroundColor
+        };
+        await updateDoc(eventDoc, updatedEvent);
+      }
+    });
+  }
+
+  handleDateClick(info: any) {
+    this.calendarRef.getApi().changeView('timeGridDay', info.dateStr);
   }
 }
 
