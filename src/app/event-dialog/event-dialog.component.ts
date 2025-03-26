@@ -23,7 +23,7 @@ export class EventDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     if (!this.data.isNew) {
-      const textData = this.data.title.split('\n <small>Kasse:</small>');
+      const textData = this.data.title.split('<small>Kasse:</small>');
       this.eventData.title = textData[0].trim();
       this.eventData.selection = textData[1] ? Number(textData[1]) : 0;
       this.eventData.backgroundColor = this.data.backgroundColor;
