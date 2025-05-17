@@ -4,10 +4,11 @@ import { CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, query, where } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebase-config';
 import { MatDialog } from '@angular/material/dialog';
 import { EventDialogComponent } from '../event-dialog/event-dialog.component';
+import { Colors } from '../color.themes';
 
 export interface WorkdayEvent {
   id?: string;
@@ -59,14 +60,28 @@ export class CalendarComponent implements OnDestroy {
   private unsubscribe: (() => void) | null = null;
   private isSelecting = false; // Flag, um select-Prozess zu markieren
 
+  totalTime = 0;
+  totalPause = 0;
+
   constructor(private dialog: MatDialog) { }
 
   handleDatesSet(dateInfo: any) {
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    // Ersten und letzten Tag des aktuellen Monats berechnen
+    const currentMonthStart = new Date(currentYear, currentMonth, 1);
+    const currentMonthEnd = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59);
+
     const start = new Date(dateInfo.startStr);
     const end = new Date(dateInfo.endStr);
 
     const monthStart = new Date(start.getFullYear(), start.getMonth(), 1);
     const monthEnd = new Date(end.getFullYear(), end.getMonth() + 1, 0, 23, 59, 59);
+
+    let sum = 0;
+    let pause = 0;
 
     if (this.unsubscribe) {
       this.unsubscribe();
@@ -80,16 +95,52 @@ export class CalendarComponent implements OnDestroy {
     );
 
     this.unsubscribe = onSnapshot(q, (snapshot) => {
-      const events: EventInput[] = snapshot.docs.map(doc => ({
-        id: doc.id,
-        title: doc.data()['title'],
-        start: doc.data()['start'],
-        end: doc.data()['end'],
-        allDay: doc.data()['allDay'],
-        backgroundColor: doc.data()['backgroundColor'],
-        borderColor: doc.data()['backgroundColor'],
-        textColor: '#000000'
-      }));
+      const events: EventInput[] = snapshot.docs.map(doc => {
+        const colorId = doc.data()['backgroundColor'];
+        const color = Colors.find(c => c.id === colorId)?.value || '#FFFFFF';
+        const eventStart = new Date(doc.data()['start']);
+
+        const isStartInMonth = eventStart >= currentMonthStart && eventStart <= currentMonthEnd;
+
+        if (isStartInMonth) {
+
+          let title = doc.data()['title'];
+
+          if (title.includes('<small>Kasse:</small>')) {
+            let numbers = title.split('<small>Kasse:</small>');
+            numbers = numbers[0].trim();
+
+            let numStart = parseInt(numbers.split('-')[0].trim(), 10);
+            let numEnd = parseInt(numbers.split('-')[1].trim(), 10);
+
+            if (!isNaN(numStart) && !isNaN(numEnd)) {
+              let daySum = numEnd - numStart;
+              if (daySum >= 6 && daySum < 8) {
+                pause += 0.25;
+              } else if (daySum >= 8) {
+                pause += 0.5;
+              }
+              sum += daySum;
+            } else {
+              console.warn(`Invalid start or end values in the title: ${title}`);
+            }
+          }
+        }
+
+
+        return {
+          id: doc.id,
+          title: doc.data()['title'],
+          start: doc.data()['start'],
+          end: doc.data()['end'],
+          allDay: doc.data()['allDay'],
+          backgroundColor: color,
+          borderColor: color,
+          textColor: '#000000'
+        };
+      });
+      this.totalTime = sum;
+      this.totalPause = pause;
       this.calendarOptions.events = events;
     }, (error) => {
       console.error('Fehler beim Laden der Events:', error);
