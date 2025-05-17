@@ -80,9 +80,6 @@ export class CalendarComponent implements OnDestroy {
     const monthStart = new Date(start.getFullYear(), start.getMonth(), 1);
     const monthEnd = new Date(end.getFullYear(), end.getMonth() + 1, 0, 23, 59, 59);
 
-    let sum = 0;
-    let pause = 0;
-
     if (this.unsubscribe) {
       this.unsubscribe();
     }
@@ -95,6 +92,8 @@ export class CalendarComponent implements OnDestroy {
     );
 
     this.unsubscribe = onSnapshot(q, (snapshot) => {
+      let sum = 0;
+      let pause = 0;
       const events: EventInput[] = snapshot.docs.map(doc => {
         const colorId = doc.data()['backgroundColor'];
         const color = Colors.find(c => c.id === colorId)?.value || '#FFFFFF';
