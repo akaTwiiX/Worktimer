@@ -15,7 +15,7 @@ import { Colors } from '../color.themes';
   styleUrl: './event-dialog.component.scss'
 })
 export class EventDialogComponent {
-  eventData = { title: '', backgroundColor: '', selection: 0 };
+  eventData = { title: '', backgroundColor: 0, selection: 0 };
 
   colors = Colors;
 
@@ -26,7 +26,8 @@ export class EventDialogComponent {
       const textData = this.data.title.split('<small>Kasse:</small>');
       this.eventData.title = textData[0].trim();
       this.eventData.selection = textData[1] ? Number(textData[1]) : 0;
-      this.eventData.backgroundColor = this.data.backgroundColor;
+      const foundColor = this.colors.find(color => color.value === this.data.backgroundColor);
+      this.eventData.backgroundColor = foundColor ? foundColor.id : 0;
     }
 
   }
@@ -40,7 +41,7 @@ export class EventDialogComponent {
   }
 
   onSave(): void {
-    if (this.eventData.title == "" && this.eventData.backgroundColor == "") return;
+    if (this.eventData.title == "" && this.eventData.backgroundColor == 0) return;
 
     this.dialogRef.close({
       title: this.eventData.selection == 0 ? this.eventData.title : `${this.eventData.title} <small>Kasse:</small> ${this.eventData.selection}`,

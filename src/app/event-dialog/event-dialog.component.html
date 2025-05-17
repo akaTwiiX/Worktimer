@@ -14,7 +14,7 @@
     <mat-radio-group aria-labelledby="example-radio-group-label" class="radio-btn"
         [(ngModel)]="eventData.backgroundColor">
         @for (color of colors; track color) {
-        <mat-radio-button class="example-radio-button" [value]="color.value">
+        <mat-radio-button class="example-radio-button" [value]="color.id">
             <div class="color" [style.background-color]="color.value"></div>
         </mat-radio-button>
         }
