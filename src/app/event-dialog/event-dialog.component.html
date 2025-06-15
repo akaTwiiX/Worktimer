@@ -1,5 +1,9 @@
 <div class="dialog">
-    <h3>{{ data.isNew ? 'Neues Event' : 'Event bearbeiten' }}</h3>
+    <div>
+        <h3>{{ data.isNew ? 'Neue Arbeitszeit' : 'Arbeitszeit bearbeiten' }}</h3>
+        <mat-slide-toggle [checked]="isVisible" (change)="toggleVisibility($event)"></mat-slide-toggle>
+    </div>
+    @if(isVisible){
     <mat-form-field>
         <mat-label>Ereignisname</mat-label>
         <input type="text" matInput [(ngModel)]="eventData.title">
@@ -19,6 +23,28 @@
         </mat-radio-button>
         }
     </mat-radio-group>
+    }@else {
+    <mat-radio-group aria-labelledby="example-radio-group-label" class="radio-btn"
+        [(ngModel)]="eventData.backgroundColor" style="flex-direction: column;">
+        <mat-radio-button class="example-radio-button" [value]="colors[2].id" (click)="selectTime('Frei')">
+            <div class="time-selector" [style.background-color]="colors[2].value">
+                <span>Frei</span>
+            </div>
+        </mat-radio-button>
+        <mat-radio-button class="example-radio-button" [value]="colors[0].id" (click)="selectTime('8-17')">
+            <div class="time-selector" [style.background-color]="colors[0].value">
+                <span>08:00 - 17:00</span>
+            </div>
+        </mat-radio-button>
+        <mat-radio-button class="example-radio-button" [value]="colors[3].id" (click)="selectTime('11-19')">
+            <div class="time-selector" [style.background-color]="colors[3].value">
+                <span>11:00 - 19:00</span>
+            </div>
+        </mat-radio-button>
+
+    </mat-radio-group>
+    }
+
 
     <div mat-dialog-actions class="btn-container">
         <button mat-button color="primary" (click)="onSave()">Speichern</button>

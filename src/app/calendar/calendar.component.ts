@@ -193,9 +193,6 @@ export class CalendarComponent implements OnDestroy {
         isNew: false,
         id: event.id,
         title: event.title,
-        start: event.startStr,
-        end: event.endStr,
-        allDay: event.allDay,
         backgroundColor: event.backgroundColor
       },
       autoFocus: false
@@ -212,9 +209,9 @@ export class CalendarComponent implements OnDestroy {
         } else {
           const updatedEvent = {
             title: result.title,
-            start: result.start || event.startStr,
-            end: result.end || event.endStr,
-            allDay: result.allDay ?? event.allDay,
+            start: event.startStr,
+            end: event.endStr,
+            allDay: event.allDay,
             backgroundColor: result.backgroundColor,
             borderColor: result.backgroundColor,
             textColor: '#000000'
