@@ -22,7 +22,7 @@ export class EventDialogComponent {
 
   isVisible = false;
 
-  selectedTime = '8-17';
+  selectedTime = '9-17';
 
   constructor(public dialogRef: MatDialogRef<EventDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
