@@ -41,6 +41,11 @@
                 <span>11:00 - 19:00</span>
             </div>
         </mat-radio-button>
+        <mat-radio-button class="example-radio-button" [value]="colors[5].id" (click)="selectTime('10-15')">
+            <div class="time-selector" [style.background-color]="colors[5].value">
+                <span>10:00 - 15:00</span>
+            </div>
+        </mat-radio-button>
 
     </mat-radio-group>
     }
