@@ -22,7 +22,7 @@ export class EventDialogComponent {
 
   isVisible = false;
 
-  selectedTime = '9-17';
+  selectedTime = this.getTimeByColorId(this.eventData.backgroundColor);
 
   constructor(public dialogRef: MatDialogRef<EventDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
@@ -31,10 +31,10 @@ export class EventDialogComponent {
     if (!this.data.isNew) {
       const textData = this.data.title.split('<small>Kasse:</small>');
       this.eventData.title = textData[0].trim();
-      this.selectedTime = this.eventData.title;
       this.eventData.selection = textData[1] ? Number(textData[1]) : 0;
       const foundColor = this.colors.find(color => color.value === this.data.backgroundColor);
       this.eventData.backgroundColor = foundColor ? foundColor.id : 0;
+      this.selectedTime = this.getTimeByColorId(this.eventData.backgroundColor);
     }
 
   }
@@ -56,7 +56,7 @@ export class EventDialogComponent {
   }
 
   onSave(): void {
-    if (this.isVisible && this.eventData.title == "" && this.eventData.backgroundColor == 0) return;
+    if (this.isVisible && this.eventData.title === "" && this.eventData.backgroundColor === 0) return;
 
     this.dialogRef.close({
       title: this.setTitle(),
@@ -65,7 +65,7 @@ export class EventDialogComponent {
   }
 
   setTitle() {
-    if (this.eventData.selection == 0 && this.isVisible) {
+    if (this.eventData.selection === 0 && this.isVisible) {
       return this.eventData.title;
     } else if (this.isVisible) {
       return `${this.eventData.title} <small>Kasse:</small> ${this.eventData.selection}`;
@@ -73,4 +73,20 @@ export class EventDialogComponent {
       return this.selectedTime;
     }
   }
+
+  getTimeByColorId(id: number): string {
+    switch (id) {
+      case this.colors[2].id:
+        return 'Frei';
+      case this.colors[0].id:
+        return '9-17';
+      case this.colors[3].id:
+        return '11-19';
+      case this.colors[5].id:
+        return '10-15';
+      default:
+        return '9-17';
+    }
+  }
+
 }
