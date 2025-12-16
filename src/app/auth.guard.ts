@@ -6,14 +6,11 @@ import { auth } from './firebase-config';
 export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
-  // Prüfe den aktuellen Benutzer synchron
   const user = auth.currentUser;
 
-  if (user) {
-    // Benutzer ist eingeloggt, Zugriff erlauben
+  if (user && user.emailVerified) {
     return true;
   } else {
-    // Benutzer ist nicht eingeloggt, zur Login-Seite umleiten
     router.navigate(['/login']);
     return false;
   }

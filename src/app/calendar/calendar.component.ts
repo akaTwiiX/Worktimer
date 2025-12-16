@@ -4,16 +4,18 @@ import { CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, query, where } from 'firebase/firestore';
-import { db } from '../firebase-config';
+import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, query, where, getDocs } from 'firebase/firestore';
+import { auth, db } from '../firebase-config';
 import { MatDialog } from '@angular/material/dialog';
 import { EventDialogComponent } from '../event-dialog/event-dialog.component';
 import { Colors } from '../color.themes';
+import { MatButtonModule } from '@angular/material/button';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [FullCalendarModule],
+  imports: [FullCalendarModule, MatButtonModule],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
 })
@@ -57,7 +59,7 @@ export class CalendarComponent implements OnDestroy {
   totalTime = 0;
   totalPause = 0;
 
-  constructor(private dialog: MatDialog) { }
+  constructor(private dialog: MatDialog, private router: Router) { }
 
   onTouchStart(e: TouchEvent) {
     this.touchStartX = e.changedTouches[0].screenX;
@@ -98,8 +100,7 @@ export class CalendarComponent implements OnDestroy {
     if (this.unsubscribe) {
       this.unsubscribe();
     }
-
-    const eventsCollection = collection(db, 'events');
+    const eventsCollection = collection(db, auth.currentUser!.uid);
     const q = query(
       eventsCollection,
       where('start', '>=', monthStart.toISOString()),
@@ -245,7 +246,7 @@ export class CalendarComponent implements OnDestroy {
         };
 
         try {
-          await addDoc(collection(db, 'events'), newEvent);
+          await addDoc(collection(db, auth.currentUser!.uid), newEvent);
         } catch (error) {
           console.error('Error creating events:', error);
         }
@@ -268,7 +269,7 @@ export class CalendarComponent implements OnDestroy {
     dialogRef.afterClosed().subscribe(async (result) => {
       if (!result) return;
 
-      const eventDoc = doc(db, 'events', eventForDay.id!);
+      const eventDoc = doc(db, auth.currentUser!.uid, eventForDay.id!);
 
       try {
         if (result.delete) {
@@ -289,6 +290,11 @@ export class CalendarComponent implements OnDestroy {
         console.error('Error update/deleting events:', error);
       }
     });
+  }
+
+  async logout() {
+    await auth.signOut();
+    this.router.navigate(['/login']);
   }
 
   ngOnDestroy() {

@@ -1,12 +1,12 @@
-<div class="login">
+<div class="register">
     @if (isLoading) {
     <mat-spinner></mat-spinner>
     } @else {
-    <form class="login-form">
+    <form class="register-form">
         <div>
-            <h2>Login</h2>
+            <h2>Registrieren</h2>
         </div>
-        
+
         <mat-form-field appearance="outline">
             <mat-label>Email</mat-label>
             <input matInput type="email" [formControl]="emailFormControl" placeholder="beispiel@email.de">
@@ -20,7 +20,7 @@
 
         <mat-form-field appearance="outline">
             <mat-label>Passwort</mat-label>
-            <input matInput type="password" [formControl]="passwordFormControl" placeholder="Passwort">
+            <input matInput type="password" [formControl]="passwordFormControl" placeholder="Mindestens 8 Zeichen">
             @if (passwordFormControl.hasError('minlength')) {
             <mat-error>Passwort muss mindestens 8 Zeichen lang sein</mat-error>
             }
@@ -29,34 +29,35 @@
             }
         </mat-form-field>
 
+        <mat-form-field appearance="outline">
+            <mat-label>Passwort wiederholen</mat-label>
+            <input matInput type="password" [formControl]="passwordConfirmFormControl" placeholder="Passwort bestätigen">
+            @if (passwordConfirmFormControl.hasError('minlength')) {
+            <mat-error>Passwort muss mindestens 8 Zeichen lang sein</mat-error>
+            }
+            @if (passwordConfirmFormControl.hasError('required')) {
+            <mat-error>Passwort-Bestätigung ist erforderlich</mat-error>
+            }
+        </mat-form-field>
+
         @if (errorMessage) {
         <div class="message error">{{errorMessage}}</div>
         }
         
-        @if (emailNotVerified) {
-        <div class="message warning">
-            <p><strong>E-Mail nicht verifiziert!</strong></p>
-            <p>Bitte überprüfen Sie Ihr E-Mail-Postfach und bestätigen Sie Ihre E-Mail-Adresse.</p>
-            @if (verificationEmailSent) {
-            <p class="success-text">✓ Verifikations-E-Mail wurde erneut gesendet!</p>
-            } @else {
-            <button mat-stroked-button color="accent" (click)="resendVerificationEmail()">
-                Verifikations-E-Mail erneut senden
-            </button>
-            }
-        </div>
+        @if (successMessage) {
+        <div class="message success">{{successMessage}}</div>
         }
 
         <div class="btn-container">
-            <button mat-raised-button color="primary" 
-                    [disabled]="!emailFormControl.valid || !passwordFormControl.valid"
-                    (click)="login()">
-                Einloggen
+            <button mat-raised-button color="primary"
+                    [disabled]="!emailFormControl.valid || !passwordFormControl.valid || !passwordConfirmFormControl.valid"
+                    (click)="register()">
+                Registrieren
             </button>
         </div>
 
         <div class="link-container">
-            <a routerLink="/register">Noch kein Konto? Registrieren</a>
+            <a routerLink="/login">Bereits registriert? Zum Login</a>
         </div>
     </form>
     }
