@@ -1,13 +1,13 @@
 <div class="container">
+    <div class="header">
+        <app-theme-toggle></app-theme-toggle>
+        <button mat-raised-button color="primary" (click)="logout()">
+            Ausloggen
+        </button>
+    </div>
     <full-calendar #calendar 
         [options]="calendarOptions" 
         (touchstart)="onTouchStart($event)"
         (touchend)="onTouchEnd($event)">
     </full-calendar>
-    <div>
-        <button mat-raised-button color="primary" 
-                    (click)="logout()">
-                Ausloggen
-            </button>
-    </div>
 </div>

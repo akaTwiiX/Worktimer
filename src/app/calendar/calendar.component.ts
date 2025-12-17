@@ -11,11 +11,12 @@ import { EventDialogComponent } from '../event-dialog/event-dialog.component';
 import { Colors } from '../color.themes';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
+import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
 
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [FullCalendarModule, MatButtonModule],
+  imports: [FullCalendarModule, MatButtonModule, ThemeToggleComponent],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
 })

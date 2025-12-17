@@ -1,0 +1,157 @@
+/* These tokens are generated using https://themes.angular-material.dev/ */
+/* Preview: https://themes.angular-material.dev/?bold-font-weight=700&brand-font-family=Roboto&medium-font-weight=500&plain-font-family=Roboto&regular-font-weight=400&seed-error=%23ffb4ab&seed-neutral=%237a757d&seed-neutral-variant=%237b7482&seed-primary=%23613DA2&seed-secondary=%23d0bfee&seed-tertiary=%23ffaedd */
+/* Seed Colors: primary: #613DA2, secondary: #d0bfee, tertiary: #ffaedd, error: #ffb4ab, neutral: #7a757d, neutral-variant: #7b7482 */
+/* Seed Typography: plain-font-family: Roboto, brand-font-family: Roboto, bold-font-weight: 700, medium-font-weight: 500, regular-font-weight: 400 */
+
+/* Make sure to import fonts in `<head>` of html */
+/*
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto&family=Roboto&display=swap');
+</style>
+
+OR
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto&display=swap">
+*/
+
+@use "@angular/material" as mat;
+
+
+/* Light Theme */
+:root,
+:host {
+    @include mat.theme-overrides((primary: #6d4aaf,
+            on-primary: #ffffff,
+            primary-container: #ebdcff,
+            on-primary-container: #260059,
+            inverse-primary: #d3bbff,
+            primary-fixed: #ebdcff,
+            primary-fixed-dim: #d3bbff,
+            on-primary-fixed: #260059,
+            on-primary-fixed-variant: #553095,
+            secondary: #655880,
+            on-secondary: #ffffff,
+            secondary-container: #eaddff,
+            on-secondary-container: #211439,
+            secondary-fixed: #eaddff,
+            secondary-fixed-dim: #d0bfee,
+            on-secondary-fixed: #211439,
+            on-secondary-fixed-variant: #4d4067,
+            tertiary: #8a4871,
+            on-tertiary: #ffffff,
+            tertiary-container: #ffd8eb,
+            on-tertiary-container: #3a032b,
+            tertiary-fixed: #ffd8eb,
+            tertiary-fixed-dim: #ffaedd,
+            on-tertiary-fixed: #3a032b,
+            on-tertiary-fixed-variant: #6e3159,
+            background: #fdf8f8,
+            on-background: #1c1b1c,
+            surface: #fdf8f8,
+            surface-dim: #ddd9d9,
+            surface-bright: #fdf8f8,
+            surface-container-lowest: #ffffff,
+            surface-container-low: #f7f2f3,
+            surface-container: #f1eded,
+            surface-container-high: #ebe7e7,
+            surface-container-highest: #e6e1e2,
+            on-surface: #1c1b1c,
+            shadow: #000000,
+            scrim: #000000,
+            surface-tint: #615d64,
+            inverse-surface: #313030,
+            inverse-on-surface: #f4f0f0,
+            outline: #7a767b,
+            outline-variant: #cac5cb,
+            neutral: #797677,
+            neutral10: #1c1b1c,
+            error: #ba1a1a,
+            error-container: #ffdad6,
+            on-error: #ffffff,
+            on-error-container: #410002,
+            surface-variant: #e7e0e7,
+            on-surface-variant: #49454b,
+            neutral-variant: #7a767c,
+            neutral-variant20: #322f35,
+            inverse-secondary: #d0bfee,
+            inverse-tertiary: #ffaedd,
+        ));
+}
+
+/* Dark Theme */
+.dark {
+    @include mat.theme-overrides((primary: #d3bbff,
+            on-primary: #3e137e,
+            primary-container: #553095,
+            on-primary-container: #ebdcff,
+            inverse-primary: #6d4aaf,
+            primary-fixed: #ebdcff,
+            primary-fixed-dim: #d3bbff,
+            on-primary-fixed: #260059,
+            on-primary-fixed-variant: #553095,
+            secondary: #d0bfee,
+            on-secondary: #362a4f,
+            secondary-container: #4d4067,
+            on-secondary-container: #eaddff,
+            secondary-fixed: #eaddff,
+            secondary-fixed-dim: #d0bfee,
+            on-secondary-fixed: #211439,
+            on-secondary-fixed-variant: #4d4067,
+            tertiary: #ffaedd,
+            on-tertiary: #531a41,
+            tertiary-container: #6e3159,
+            on-tertiary-container: #ffd8eb,
+            tertiary-fixed: #ffd8eb,
+            tertiary-fixed-dim: #ffaedd,
+            on-tertiary-fixed: #3a032b,
+            on-tertiary-fixed-variant: #6e3159,
+            background: #141314,
+            on-background: #e6e1e2,
+            surface: #141314,
+            surface-dim: #141314,
+            surface-bright: #3a3939,
+            surface-container-lowest: #0f0e0e,
+            surface-container-low: #1c1b1c,
+            surface-container: #201f20,
+            surface-container-high: #2b2a2a,
+            surface-container-highest: #363435,
+            on-surface: #e6e1e2,
+            shadow: #000000,
+            scrim: #000000,
+            surface-tint: #cbc4cd,
+            inverse-surface: #e6e1e2,
+            inverse-on-surface: #313030,
+            outline: #948f95,
+            outline-variant: #49454b,
+            neutral: #797677,
+            neutral10: #1c1b1c,
+            error: #ffb4ab,
+            error-container: #93000a,
+            on-error: #690005,
+            on-error-container: #ffdad6,
+            surface-variant: #49454b,
+            on-surface-variant: #cac5cb,
+            neutral-variant: #7a767c,
+            neutral-variant20: #322f35,
+            inverse-secondary: #655880,
+            inverse-tertiary: #8a4871,
+        ));
+}
+
+/* Typography */
+:root,
+:host {
+    /* core typography tokens are not generating css variables, hence below */
+    --mat-sys-brand-font-family: Roboto;
+    --mat-sys-plain-font-family: Roboto;
+    --mat-sys-bold-font-weight: 700;
+    --mat-sys-medium-font-weight: 500;
+    --mat-sys-regular-font-weight: 400;
+
+    @include mat.theme-overrides((brand-family: Roboto,
+            plain-family: Roboto,
+            bold-weight: 700,
+            medium-weight: 500,
+            regular-weight: 400,
+        ));
+}
