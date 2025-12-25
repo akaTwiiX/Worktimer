@@ -1,25 +1,22 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
-import { CalendarComponent } from './calendar/calendar.component';
 import { authGuard } from './auth.guard';
 
 export const routes: Routes = [
     {
         path: '',
-        component: CalendarComponent,
+        loadComponent: () => import('./calendar/calendar.component').then(m => m.CalendarComponent),
         canActivate: [authGuard]
     },
     {
         path: 'login',
-        component: LoginComponent
+        loadComponent: () => import('./login/login.component').then(m => m.LoginComponent)
     },
     {
         path: 'register',
-        component: RegisterComponent
+        loadComponent: () => import('./register/register.component').then(m => m.RegisterComponent)
     },
     {
         path: '**',
-        component: LoginComponent
+        redirectTo: 'login'
     }
 ];

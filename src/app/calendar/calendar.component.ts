@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FullCalendarComponent, FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -18,7 +18,8 @@ import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
   standalone: true,
   imports: [FullCalendarModule, MatButtonModule, ThemeToggleComponent],
   templateUrl: './calendar.component.html',
-  styleUrls: ['./calendar.component.scss']
+  styleUrls: ['./calendar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarComponent implements OnDestroy {
   @ViewChild('calendar') calendarRef!: FullCalendarComponent;
@@ -60,7 +61,7 @@ export class CalendarComponent implements OnDestroy {
   totalTime = 0;
   totalPause = 0;
 
-  constructor(private dialog: MatDialog, private router: Router) { }
+  constructor(private dialog: MatDialog, private router: Router, private cdr: ChangeDetectorRef) { }
 
   onTouchStart(e: TouchEvent) {
     this.touchStartX = e.changedTouches[0].screenX;
@@ -111,112 +112,27 @@ export class CalendarComponent implements OnDestroy {
     this.unsubscribe = onSnapshot(
       q,
       (snapshot) => {
-        let sum = 0;
-        let pause = 0;
-        const events: EventInput[] = snapshot.docs.map((doc) => {
-          const colorId = doc.data()['backgroundColor'];
-          const color = Colors.find((c) => c.id === colorId)?.value || '#FFFFFF';
-          const eventStart = new Date(doc.data()['start']);
+        const worker = new Worker(new URL('./event-processor.worker', import.meta.url));
+        worker.onmessage = ({ data }) => {
+          this.totalTime = data.totalTime;
+          this.totalPause = data.totalPause;
+          this.originalEvents = data.originalEvents;
+          this.calendarOptions.events = data.mergedEvents;
+          this.cdr.markForCheck();
+          worker.terminate();
+        };
 
-          const isStartInMonth =
-            eventStart >= currentMonthStart && eventStart <= currentMonthEnd;
-
-          if (isStartInMonth) {
-            let title = doc.data()['title'];
-
-            if (title.includes('<small>Kasse:</small>')) {
-              let numbers = title.split('<small>Kasse:</small>');
-              numbers = numbers[0].trim();
-
-              let numStart = parseInt(numbers.split('-')[0].trim(), 10);
-              let numEnd = parseInt(numbers.split('-')[1].trim(), 10);
-
-              if (!isNaN(numStart) && !isNaN(numEnd)) {
-                let daySum = numEnd - numStart;
-                if (daySum >= 6 && daySum < 8) {
-                  pause += 0.25;
-                } else if (daySum >= 8) {
-                  pause += 0.5;
-                }
-                sum += daySum;
-              } else {
-                console.warn(`Invalid start or end values in the title: ${title}`);
-              }
-            }
-          }
-
-          return {
-            id: doc.id,
-            title: doc.data()['title'],
-            start: doc.data()['start'],
-            end: doc.data()['end'],
-            allDay: true,
-            backgroundColor: color,
-            borderColor: color,
-            textColor: '#000000'
-          };
+        worker.postMessage({
+          docs: snapshot.docs.map(d => ({ id: d.id, ...d.data() })),
+          colors: Colors,
+          currentMonthStart: currentMonthStart.toISOString(),
+          currentMonthEnd: currentMonthEnd.toISOString()
         });
-
-        this.totalTime = sum;
-        this.totalPause = pause;
-
-        const sorted = events.sort(
-          (a, b) =>
-            new Date(a.start as string).getTime() -
-            new Date(b.start as string).getTime()
-        );
-
-        this.originalEvents = sorted;
-        this.calendarOptions.events = this.mergeEvents(sorted);
       },
       (error) => {
         console.error('Error loading events:', error);
       }
     );
-  }
-
-  private mergeEvents(events: EventInput[]): EventInput[] {
-    if (!events.length) return [];
-
-    const merged: EventInput[] = [];
-    let blockStart = events[0].start as string;
-    let blockEnd = events[0].start as string;
-    let currentTitle = events[0].title;
-    let currentColor = events[0].backgroundColor;
-
-    function pushBlock() {
-      const endDate = new Date(blockEnd);
-      endDate.setDate(endDate.getDate() + 1);
-
-      merged.push({
-        title: currentTitle,
-        start: blockStart,
-        end: endDate.toISOString().split('T')[0],
-        allDay: true,
-        backgroundColor: currentColor,
-        borderColor: currentColor,
-        textColor: '#000000'
-      });
-    }
-
-    for (let i = 1; i < events.length; i++) {
-      const prev = new Date(blockEnd);
-      const next = new Date(events[i].start as string);
-      const diff = (next.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24);
-
-      if (events[i].title === currentTitle && diff === 1) {
-        blockEnd = events[i].start as string;
-      } else {
-        pushBlock();
-        blockStart = events[i].start as string;
-        blockEnd = events[i].start as string;
-        currentTitle = events[i].title;
-        currentColor = events[i].backgroundColor as string;
-      }
-    }
-
-    pushBlock();
-    return merged;
   }
 
   async handleDateClick(info: any) {
