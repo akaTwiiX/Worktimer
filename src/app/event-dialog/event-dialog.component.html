@@ -6,7 +6,7 @@
     @if(isVisible){
     <mat-form-field>
         <mat-label>Ereignisname</mat-label>
-        <input type="text" matInput [(ngModel)]="eventData.title">
+        <input type="text" matInput [(ngModel)]="eventData.title" required>
     </mat-form-field>
 
     <mat-form-field>
@@ -15,33 +15,31 @@
     </mat-form-field>
 
 
-    <mat-radio-group aria-labelledby="example-radio-group-label" class="radio-btn"
-        [(ngModel)]="eventData.backgroundColor">
+    <mat-radio-group class="radio-btn" [(ngModel)]="eventData.backgroundColor">
         @for (color of colors; track color) {
-        <mat-radio-button class="example-radio-button" [value]="color.id">
+        <mat-radio-button [value]="color.id">
             <div class="color" [style.background-color]="color.value"></div>
         </mat-radio-button>
         }
     </mat-radio-group>
     }@else {
-    <mat-radio-group aria-labelledby="example-radio-group-label" class="radio-btn"
-        [(ngModel)]="eventData.backgroundColor" style="flex-direction: column;">
-        <mat-radio-button class="example-radio-button" [value]="colors[2].id" (click)="selectTime('Frei')">
+    <mat-radio-group class="radio-btn" [(ngModel)]="eventData.backgroundColor" style="flex-direction: column;">
+        <mat-radio-button [value]="colors[2].id" (click)="selectTime('Frei')">
             <div class="time-selector" [style.background-color]="colors[2].value">
                 <span>Frei</span>
             </div>
         </mat-radio-button>
-        <mat-radio-button class="example-radio-button" [value]="colors[0].id" (click)="selectTime('9-17')">
+        <mat-radio-button [value]="colors[0].id" (click)="selectTime('9-17')">
             <div class="time-selector" [style.background-color]="colors[0].value">
                 <span>09:00 - 17:00</span>
             </div>
         </mat-radio-button>
-        <mat-radio-button class="example-radio-button" [value]="colors[3].id" (click)="selectTime('11-19')">
+        <mat-radio-button [value]="colors[3].id" (click)="selectTime('11-19')">
             <div class="time-selector" [style.background-color]="colors[3].value">
                 <span>11:00 - 19:00</span>
             </div>
         </mat-radio-button>
-        <mat-radio-button class="example-radio-button" [value]="colors[5].id" (click)="selectTime('10-15')">
+        <mat-radio-button [value]="colors[5].id" (click)="selectTime('10-15')">
             <div class="time-selector" [style.background-color]="colors[5].value">
                 <span>10:00 - 15:00</span>
             </div>
