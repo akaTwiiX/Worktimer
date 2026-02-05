@@ -56,7 +56,7 @@ export class EventDialogComponent {
   }
 
   onSave(): void {
-    if (this.isVisible && (this.eventData.title.trim().length === 0 || this.eventData.backgroundColor === 0)) return;
+    if (this.isVisible && (this.eventData.title.trim().length === 0 && this.eventData.backgroundColor === 0)) return;
 
     this.dialogRef.close({
       title: this.setTitle(),
