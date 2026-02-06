@@ -1,17 +1,17 @@
-import { Component, ElementRef, OnDestroy, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnDestroy, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FullCalendarComponent, FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, query, where, getDocs } from 'firebase/firestore';
-import { auth, db } from '../firebase-config';
+import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, query, where } from 'firebase/firestore';
+import { auth, db } from '../../firebase-config';
 import { MatDialog } from '@angular/material/dialog';
-import { EventDialogComponent } from '../event-dialog/event-dialog.component';
-import { Colors } from '../color.themes';
+import { Colors } from '../../color.themes';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
-import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
+import { ThemeToggleComponent } from '../../components/theme-toggle/theme-toggle.component';
+import { EventDialogComponent } from '../../components/event-dialog/event-dialog.component';
 
 @Component({
   selector: 'app-calendar',
@@ -112,7 +112,7 @@ export class CalendarComponent implements OnDestroy {
     this.unsubscribe = onSnapshot(
       q,
       (snapshot) => {
-        const worker = new Worker(new URL('./event-processor.worker', import.meta.url));
+        const worker = new Worker(new URL('../../worker/event-processor.worker', import.meta.url));
         worker.onmessage = ({ data }) => {
           this.totalTime = data.totalTime;
           this.totalPause = data.totalPause;

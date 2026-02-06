@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { ThemeService, ThemeMode } from '../theme.service';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { ThemeMode, ThemeService } from '../../theme.service';
 
 @Component({
   selector: 'app-theme-toggle',
+  standalone: true,
   imports: [MatButtonToggleModule],
   templateUrl: './theme-toggle.component.html',
   styleUrl: './theme-toggle.component.scss'
