@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>Farbe ersetzen</h2>
+<mat-dialog-content>
+    <p>Es gibt noch Termine mit der Farbe <b [style.color]="data.originalColor.value">{{ data.originalColor.label }}</b>. Bitte wähle eine Ersatzfarbe aus:</p>
+    <div class="replacement-grid">
+    @for (color of data.colors; track color.id) {
+        <div class="color-option" (click)="onSelect(color.id)">
+        <div class="color-preview" [style.background-color]="color.value"></div>
+        <span>{{ color.label }}</span>
+        </div>
+    }
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    @if (newColorId() !== null) {
+        <button mat-button (click)="onSave()">Speichern</button>
+    }
+    <button mat-button (click)="onCancel()">Abbrechen</button>
+</mat-dialog-actions>

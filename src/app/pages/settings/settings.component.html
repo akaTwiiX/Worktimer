@@ -1,0 +1,48 @@
+<div class="container">
+    <div class="header">
+        <button color="accent" mat-button (click)="back()">
+            <mat-icon>arrow_back</mat-icon>
+            Zurück
+        </button>
+        <button mat-button color="warn" (click)="logout()">
+            Ausloggen
+        </button>
+    </div>
+    <div class="content">
+        <div class="theme-toggle">
+            <h3>Theme</h3>
+            <div class="theme-toggle-container">
+                <app-theme-toggle/>
+            </div>
+        </div>
+        <div class="color-settings">
+            <h3>Theme Farben bearbeiten</h3>
+            <div class="color-picker-container">
+                @for (color of themeColors(); track color.id) {
+                    <app-color-picker 
+                        [(label)]="color.label" 
+                        [(color)]="color.value" 
+                        [(isActive)]="color.isActive" 
+                        (colorChange)="markDirty()" 
+                        (labelChange)="markDirty()"
+                        (isActiveChange)="markDirty()"
+                        (delete)="deleteColor(color)"/>
+                }
+            </div>
+            @if (themeColors().length < 10) {
+                <button mat-stroked-button color="accent" class="add-color-button" (click)="addColor()">
+                    <mat-icon>add</mat-icon>
+                    Farbe hinzufügen
+                </button>
+            }
+            <button mat-raised-button color="primary" class="save-button" [class.save-button-hidden]="!hasChanges()" (click)="saveSettings()" [disabled]="isSaving() || !hasChanges()">
+                @if (isSaving()) {
+                    Speichern...
+                } @else {
+                    Speichern
+                }
+            </button>
+        </div>
+        
+    </div>
+</div>

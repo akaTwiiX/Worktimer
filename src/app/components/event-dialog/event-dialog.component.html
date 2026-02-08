@@ -24,26 +24,16 @@
     </mat-radio-group>
     }@else {
     <mat-radio-group class="radio-btn" [(ngModel)]="eventData.backgroundColor" style="flex-direction: column;">
-        <mat-radio-button [value]="colors[2].id" (click)="selectTime('Frei')">
-            <div class="time-selector" [style.background-color]="colors[2].value">
-                <span>Frei</span>
+        @for (color of sortedColors(); track color) {
+        @if(color.isActive){
+        <mat-radio-button [value]="color.id" (click)="selectTime(color.label)">
+            <div class="time-selector" [style.background-color]="color.value">
+                <span [appTimeFormat]="color.label"></span>
             </div>
         </mat-radio-button>
-        <mat-radio-button [value]="colors[0].id" (click)="selectTime('9-17')">
-            <div class="time-selector" [style.background-color]="colors[0].value">
-                <span>09:00 - 17:00</span>
-            </div>
-        </mat-radio-button>
-        <mat-radio-button [value]="colors[3].id" (click)="selectTime('11-19')">
-            <div class="time-selector" [style.background-color]="colors[3].value">
-                <span>11:00 - 19:00</span>
-            </div>
-        </mat-radio-button>
-        <mat-radio-button [value]="colors[5].id" (click)="selectTime('10-15')">
-            <div class="time-selector" [style.background-color]="colors[5].value">
-                <span>10:00 - 15:00</span>
-            </div>
-        </mat-radio-button>
+        }
+        }
+
 
     </mat-radio-group>
     }

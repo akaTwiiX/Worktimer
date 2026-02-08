@@ -1,0 +1,28 @@
+.replacement-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.color-option {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background 0.2s;
+
+    &:hover {
+        background: rgba(0, 0, 0, 0.05);
+    }
+}
+
+.color-preview {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}

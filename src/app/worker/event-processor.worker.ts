@@ -49,7 +49,10 @@ addEventListener('message', ({ data }) => {
             allDay: true,
             backgroundColor: color,
             borderColor: color,
-            textColor: '#000000'
+            textColor: '#000000',
+            extendedProps: {
+                colorId: colorId
+            }
         };
     });
 
@@ -77,6 +80,7 @@ function mergeEvents(events: EventInput[]): EventInput[] {
     let blockEnd = events[0].start as string;
     let currentTitle = events[0].title;
     let currentColor = events[0].backgroundColor;
+    let currentColorId = events[0].extendedProps?.['colorId'];
 
     function pushBlock() {
         const endDate = new Date(blockEnd);
@@ -89,7 +93,10 @@ function mergeEvents(events: EventInput[]): EventInput[] {
             allDay: true,
             backgroundColor: currentColor,
             borderColor: currentColor,
-            textColor: '#000000'
+            textColor: '#000000',
+            extendedProps: {
+                colorId: currentColorId
+            }
         });
     }
 
@@ -98,7 +105,7 @@ function mergeEvents(events: EventInput[]): EventInput[] {
         const next = new Date(events[i].start as string);
         const diff = (next.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24);
 
-        if (events[i].title === currentTitle && diff === 1) {
+        if (events[i].title === currentTitle && events[i].extendedProps?.['colorId'] === currentColorId && diff === 1) {
             blockEnd = events[i].start as string;
         } else {
             pushBlock();
@@ -106,6 +113,7 @@ function mergeEvents(events: EventInput[]): EventInput[] {
             blockEnd = events[i].start as string;
             currentTitle = events[i].title;
             currentColor = events[i].backgroundColor as string;
+            currentColorId = events[i].extendedProps?.['colorId'];
         }
     }
 

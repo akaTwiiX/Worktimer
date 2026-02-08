@@ -18,12 +18,11 @@ body {
 }
 
 .header {
-    width: calc(100% - 32px);
-    max-width: 100vw;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
     padding: 16px;
+    justify-content: space-between;
 
     button {
         flex-shrink: 0;
@@ -38,7 +37,7 @@ full-calendar {
 
 @media (max-width: 600px) {
     .header {
-        justify-content: center;
+        justify-content: start;
         gap: 12px;
     }
 

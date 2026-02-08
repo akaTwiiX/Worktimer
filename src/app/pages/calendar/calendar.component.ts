@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnDestroy, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef, inject, effect } from '@angular/core';
 import { FullCalendarComponent, FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -10,13 +10,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { Colors } from '../../color.themes';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
-import { ThemeToggleComponent } from '../../components/theme-toggle/theme-toggle.component';
 import { EventDialogComponent } from '../../components/event-dialog/event-dialog.component';
+import { MatIconModule } from '@angular/material/icon';
+import { SettingsService } from '../../settings.service';
 
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [FullCalendarModule, MatButtonModule, ThemeToggleComponent],
+  imports: [FullCalendarModule, MatButtonModule, MatIconModule],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -53,6 +54,7 @@ export class CalendarComponent implements OnDestroy {
     }
   };
 
+  private settingsService = inject(SettingsService);
   private unsubscribe: (() => void) | null = null;
   private touchStartX = 0;
   private touchEndX = 0;
@@ -61,7 +63,18 @@ export class CalendarComponent implements OnDestroy {
   totalTime = 0;
   totalPause = 0;
 
-  constructor(private dialog: MatDialog, private router: Router, private cdr: ChangeDetectorRef) { }
+  private lastSnapshotDocs: any[] | null = null;
+  private currentMonthStartISO: string = '';
+  private currentMonthEndISO: string = '';
+
+  constructor(private dialog: MatDialog, private router: Router, private cdr: ChangeDetectorRef) {
+    effect(() => {
+      const colors = this.settingsService.settings().themeColors;
+      if (this.lastSnapshotDocs) {
+        this.runWorker(this.lastSnapshotDocs, colors);
+      }
+    });
+  }
 
   onTouchStart(e: TouchEvent) {
     this.touchStartX = e.changedTouches[0].screenX;
@@ -85,6 +98,25 @@ export class CalendarComponent implements OnDestroy {
     }
   }
 
+  private runWorker(docs: any[], colors: any[]) {
+    const worker = new Worker(new URL('../../worker/event-processor.worker', import.meta.url));
+    worker.onmessage = ({ data }) => {
+      this.totalTime = data.totalTime;
+      this.totalPause = data.totalPause;
+      this.originalEvents = data.originalEvents;
+      this.calendarOptions.events = data.mergedEvents;
+      this.cdr.markForCheck();
+      worker.terminate();
+    };
+
+    worker.postMessage({
+      docs: docs,
+      colors: colors,
+      currentMonthStart: this.currentMonthStartISO,
+      currentMonthEnd: this.currentMonthEndISO
+    });
+  }
+
   handleDatesSet(dateInfo: any) {
     const now = new Date();
     const currentMonth = now.getMonth();
@@ -92,6 +124,9 @@ export class CalendarComponent implements OnDestroy {
 
     const currentMonthStart = new Date(currentYear, currentMonth, 1);
     const currentMonthEnd = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59);
+
+    this.currentMonthStartISO = currentMonthStart.toISOString();
+    this.currentMonthEndISO = currentMonthEnd.toISOString();
 
     const start = new Date(dateInfo.startStr);
     const end = new Date(dateInfo.endStr);
@@ -102,7 +137,10 @@ export class CalendarComponent implements OnDestroy {
     if (this.unsubscribe) {
       this.unsubscribe();
     }
-    const eventsCollection = collection(db, auth.currentUser!.uid);
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const eventsCollection = collection(db, user.uid);
     const q = query(
       eventsCollection,
       where('start', '>=', monthStart.toISOString()),
@@ -112,22 +150,8 @@ export class CalendarComponent implements OnDestroy {
     this.unsubscribe = onSnapshot(
       q,
       (snapshot) => {
-        const worker = new Worker(new URL('../../worker/event-processor.worker', import.meta.url));
-        worker.onmessage = ({ data }) => {
-          this.totalTime = data.totalTime;
-          this.totalPause = data.totalPause;
-          this.originalEvents = data.originalEvents;
-          this.calendarOptions.events = data.mergedEvents;
-          this.cdr.markForCheck();
-          worker.terminate();
-        };
-
-        worker.postMessage({
-          docs: snapshot.docs.map(d => ({ id: d.id, ...d.data() })),
-          colors: Colors,
-          currentMonthStart: currentMonthStart.toISOString(),
-          currentMonthEnd: currentMonthEnd.toISOString()
-        });
+        this.lastSnapshotDocs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        this.runWorker(this.lastSnapshotDocs, this.settingsService.settings().themeColors);
       },
       (error) => {
         console.error('Error loading events:', error);
@@ -178,7 +202,7 @@ export class CalendarComponent implements OnDestroy {
         isNew: false,
         id: eventForDay.id,
         title: eventForDay.title,
-        backgroundColor: eventForDay.backgroundColor
+        colorId: eventForDay.extendedProps?.['colorId']
       },
       autoFocus: false
     });
@@ -209,9 +233,8 @@ export class CalendarComponent implements OnDestroy {
     });
   }
 
-  async logout() {
-    await auth.signOut();
-    this.router.navigate(['/login']);
+  settings() {
+    this.router.navigate(['/settings']);
   }
 
   ngOnDestroy() {

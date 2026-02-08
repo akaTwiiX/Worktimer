@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, inject, computed } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,34 +7,67 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { Colors } from '../../color.themes';
+import { ThemeColors } from '../../color.themes';
+import { SettingsService } from '../../settings.service';
+import { TimeFormatDirective } from '../../directives/time-format.directive';
 
 @Component({
   selector: 'app-event-dialog',
-  imports: [MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule, MatRadioModule, MatSelectModule, MatSlideToggleModule],
+  imports: [MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule, MatRadioModule, MatSelectModule, MatSlideToggleModule, TimeFormatDirective],
   templateUrl: './event-dialog.component.html',
   styleUrl: './event-dialog.component.scss'
 })
 export class EventDialogComponent {
+  private settingsService = inject(SettingsService);
+
   eventData = { title: '', backgroundColor: 0, selection: 0 };
 
-  colors = Colors;
+  get colors(): ThemeColors[] {
+    return this.settingsService.settings().themeColors;
+  }
+
+  sortedColors = computed(() => {
+    const colors = [...this.colors];
+    const isTime = (label: string) => /^\d/.test(label) && label.includes('-');
+    const parseTime = (timeStr: string) => {
+      const [hours, minutes] = timeStr.trim().split(':').map(Number);
+      return (hours || 0) * 60 + (minutes || 0);
+    };
+
+    return colors.sort((a, b) => {
+      const isTimeA = isTime(a.label);
+      const isTimeB = isTime(b.label);
+
+      if (!isTimeA && isTimeB) return -1;
+      if (isTimeA && !isTimeB) return 1;
+
+      if (!isTimeA && !isTimeB) {
+        return a.label.localeCompare(b.label);
+      }
+
+      const startA = parseTime(a.label.split('-')[0]);
+      const startB = parseTime(b.label.split('-')[0]);
+      return startA - startB;
+    });
+  });
 
   isVisible = false;
 
-  selectedTime: string = this.getTimeByColorId(this.eventData.backgroundColor);
+  selectedTime: string = '';
 
   constructor(public dialogRef: MatDialogRef<EventDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    console.log(data)
     if (!this.data.isNew) {
       const textData = this.data.title.split('<small>Kasse:</small>');
       this.eventData.title = textData[0].trim();
       this.eventData.selection = textData[1] ? Number(textData[1].trim()) : 0;
-      const foundColor = this.colors.find(color => color.value === this.data.backgroundColor);
-      this.eventData.backgroundColor = foundColor ? foundColor.id : 0;
-      this.selectTime(this.getTimeByColorId(this.eventData.backgroundColor));
+
+      this.eventData.backgroundColor = this.data.colorId ?? 0;
+      const foundColor = this.colors.find(color => color.id === this.eventData.backgroundColor);
+      this.selectedTime = foundColor ? foundColor.label : '9-17';
+    } else {
+      this.selectedTime = '9-17';
     }
 
   }
@@ -71,21 +104,6 @@ export class EventDialogComponent {
       return `${this.eventData.title} <small>Kasse:</small> ${this.eventData.selection}`;
     } else {
       return this.selectedTime;
-    }
-  }
-
-  getTimeByColorId(id: number): string {
-    switch (id) {
-      case this.colors[2].id:
-        return 'Frei';
-      case this.colors[0].id:
-        return '9-17';
-      case this.colors[3].id:
-        return '11-19';
-      case this.colors[5].id:
-        return '10-15';
-      default:
-        return '9-17';
     }
   }
 

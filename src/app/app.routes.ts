@@ -4,16 +4,21 @@ import { authGuard } from './auth.guard';
 export const routes: Routes = [
     {
         path: '',
-        loadComponent: () => import('./calendar/calendar.component').then(m => m.CalendarComponent),
+        loadComponent: () => import('./pages/calendar/calendar.component').then(m => m.CalendarComponent),
         canActivate: [authGuard]
     },
     {
         path: 'login',
-        loadComponent: () => import('./login/login.component').then(m => m.LoginComponent)
+        loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent)
     },
     {
         path: 'register',
-        loadComponent: () => import('./register/register.component').then(m => m.RegisterComponent)
+        loadComponent: () => import('./pages/register/register.component').then(m => m.RegisterComponent)
+    },
+    {
+        path: 'settings',
+        loadComponent: () => import('./pages/settings/settings.component').then(m => m.SettingsComponent),
+        canActivate: [authGuard]
     },
     {
         path: '**',

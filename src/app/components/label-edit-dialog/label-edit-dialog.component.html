@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>{{ data.title || 'Label bearbeiten' }}</h2>
+<mat-dialog-content class="dialog-content">
+  <mat-checkbox [(ngModel)]="isActive">Aktiv als Standardauswahl</mat-checkbox>
+  <mat-form-field appearance="outline">
+    <mat-label>Label Name</mat-label>
+    <input matInput [(ngModel)]="newLabel" placeholder="Z.B. Teambesprechung" maxlength="10" (keyup.enter)="onSave()">
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions class="dialog-actions">
+  <button mat-button (click)='onCancel()'>Abbrechen</button>
+  <button mat-raised-button color="primary" (click)="onSave()">Speichern</button>
+</mat-dialog-actions>

@@ -1,0 +1,29 @@
+<div class="color-picker-container" [class.disabled]="disabled()" [style.--current-color]="color()">
+    <mat-form-field appearance="outline" class="color-picker-field">
+        <mat-label (click)="openEditDialog()">{{ label() + (isActive() ? ' (Aktiv)' : ' (Inaktiv)') }}</mat-label>
+        
+        <div matPrefix class="preview-container">
+            <div class="color-preview" [style.background-color]="color()"></div>
+            <input 
+                type="color" 
+                [value]="color()" 
+                (input)="color.set($any($event.target).value)"
+                [disabled]="disabled()"
+                class="hidden-color-input"
+            >
+        </div>
+
+        <input 
+            matInput 
+            [value]="color()" 
+            (input)="onTextChange($event)"
+            [disabled]="disabled()"
+            placeholder="#000000"
+            maxlength="7"
+        >
+
+        <button matSuffix mat-icon-button type="button" (click)="delete.emit()" [disabled]="disabled()" class="delete-btn">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </mat-form-field>
+</div>
