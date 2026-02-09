@@ -1,5 +1,5 @@
 import { Component, Inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { ThemeColors } from '../../color.themes';
@@ -7,7 +7,7 @@ import { ThemeColors } from '../../color.themes';
 @Component({
   selector: 'app-replacement-color-dialog',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule],
+  imports: [MatDialogModule, MatButtonModule],
   templateUrl: './replacement-color-dialog.component.html',
   styleUrl: './replacement-color-dialog.component.scss',
 })

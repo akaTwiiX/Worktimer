@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { Colors, ThemeColors } from '../../color.themes';
 import { query, where, collection, getDocs, writeBatch, doc } from 'firebase/firestore';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { CommonModule } from '@angular/common';
+
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { LabelEditDialogComponent } from '../../components/label-edit-dialog/label-edit-dialog.component';
 import { ReplacementColorDialogComponent } from '../../components/replacement-color-dialog/replacement-color-dialog.component';
@@ -18,7 +18,7 @@ import { SettingsService } from '../../settings.service';
 
 @Component({
   selector: 'app-settings',
-  imports: [MatButtonModule, ThemeToggleComponent, MatIconModule, ColorPickerComponent, FormsModule, MatSnackBarModule, CommonModule, MatDialogModule],
+  imports: [MatButtonModule, ThemeToggleComponent, MatIconModule, ColorPickerComponent, FormsModule, MatSnackBarModule, MatDialogModule],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss'
 })

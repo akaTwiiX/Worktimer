@@ -1,7 +1,7 @@
 import { Component, inject, input, model, output } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { CommonModule } from '@angular/common';
+
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,7 +10,7 @@ import { LabelEditDialogComponent } from '../label-edit-dialog/label-edit-dialog
 @Component({
     selector: 'app-color-picker',
     standalone: true,
-    imports: [CommonModule, MatFormFieldModule, MatInputModule, MatDialogModule, MatIconModule, MatButtonModule],
+    imports: [MatFormFieldModule, MatInputModule, MatDialogModule, MatIconModule, MatButtonModule],
     templateUrl: './color-picker.component.html',
     styleUrl: './color-picker.component.scss'
 })
