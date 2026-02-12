@@ -7,9 +7,9 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "prebuild:prod": "node set-env.js",
+    "prebuild:prod": "node ./scripts/set-env.js",
     "build:prod": "ng build --configuration production --base-href=/Worktimer/",
-    "postbuild:prod": "node generate-404.js"
+    "postbuild:prod": "node ./scripts/generate-404.js"
   },
   "private": true,
   "dependencies": {
