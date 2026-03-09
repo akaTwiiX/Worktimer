@@ -49,7 +49,7 @@ Builds the project in development mode and watches for file changes.
 Builds the project for development. The build artifacts will be stored in the `dist/` directory.
 
 ### `pnpm run build:prod`
-Builds the application for production to the `dist/` directory. 
+Builds the application for production to the `dist/` directory.
 This script also runs prebuild and postbuild steps automatically:
 - **Prebuild**: Configures the environment running `node ./scripts/set-env.js`.
 - **Build**: Compiles with production configuration and base href for `/Worktimer/`.

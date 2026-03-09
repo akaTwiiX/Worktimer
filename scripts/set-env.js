@@ -1,6 +1,7 @@
-const fs = require('fs');
-const dotenv = require('dotenv');
-dotenv.config();
+import { writeFileSync } from 'node:fs';
+import { loadEnvFile } from 'node:process';
+
+loadEnvFile();
 
 const envConfig = `
   export const firebaseConfig = {
@@ -16,4 +17,4 @@ const envConfig = `
 };
 `;
 
-fs.writeFileSync('./src/environments/environment.prod.ts', envConfig);
+writeFileSync('./src/environments/environment.prod.ts', envConfig);

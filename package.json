@@ -1,7 +1,8 @@
 {
   "name": "worktimer",
-  "version": "0.0.0",
   "type": "module",
+  "version": "0.0.0",
+  "private": true,
   "engines": {
     "node": ">=22.0.0"
   },
@@ -14,10 +15,9 @@
     "prebuild:prod": "node ./scripts/set-env.js",
     "build:prod": "ng build --configuration production --base-href=/Worktimer/",
     "postbuild:prod": "node ./scripts/generate-404.js",
-    "lint": "eslint \"src/**/*.{js,ts,html}\"",
-    "lint:fix": "eslint \"src/**/*.{js,ts,html}\" --fix"
+    "lint": "eslint ./",
+    "lint:fix": "eslint ./ --fix"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "^20.3.16",
     "@angular/common": "^20.3.16",
@@ -34,7 +34,6 @@
     "@fullcalendar/interaction": "^6.1.15",
     "@fullcalendar/timegrid": "^6.1.15",
     "@primeuix/themes": "^2.0.3",
-    "dotenv": "^16.4.7",
     "firebase": "^11.4.0",
     "primeicons": "^7.0.0",
     "primeng": "20.4.0",
@@ -46,15 +45,15 @@
     "@angular/build": "^20.3.15",
     "@angular/cli": "^20.3.15",
     "@angular/compiler-cli": "^20.3.16",
+    "@antfu/eslint-config": "7.7.0",
     "@types/jasmine": "~5.1.0",
+    "eslint": "10.0.3",
     "jasmine-core": "~5.4.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.9.3",
-    "eslint": "10.0.3",
-    "@antfu/eslint-config": "7.7.0"
+    "typescript": "~5.9.3"
   }
 }
