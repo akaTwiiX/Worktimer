@@ -1,13 +1,13 @@
-import { Component } from '@angular/core';
-import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, inject } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { auth } from '../../firebase-config';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { InputTextModule } from 'primeng/inputtext';
-import { FloatLabelModule } from 'primeng/floatlabel';
 import { ButtonModule } from 'primeng/button';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { auth } from '../../firebase-config';
 
 @Component({
   selector: 'app-register',
@@ -19,10 +19,10 @@ import { MessageModule } from 'primeng/message';
     InputTextModule,
     FloatLabelModule,
     ButtonModule,
-    MessageModule
+    MessageModule,
   ],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+  styleUrl: './register.component.scss',
 })
 export class RegisterComponent {
   emailFormControl = new FormControl('', [Validators.required, Validators.email]);
@@ -31,8 +31,7 @@ export class RegisterComponent {
   errorMessage = '';
   successMessage = '';
   isLoading = false;
-
-  constructor(private router: Router) { }
+  private router = inject(Router);
 
   async register() {
     if (!this.emailFormControl.value || !this.passwordFormControl.value || !this.passwordConfirmFormControl.value) {
@@ -58,9 +57,7 @@ export class RegisterComponent {
 
       this.successMessage = 'Registrierung erfolgreich! Bitte überprüfen Sie Ihre E-Mails zur Verifizierung.';
 
-      // Optional: Redirect after a few seconds
-      // setTimeout(() => this.router.navigate(['/login']), 5000);
-
+      setTimeout(() => this.router.navigate(['/login']), 5000);
     } catch (error: any) {
       console.error('Registration error:', error);
 
@@ -78,7 +75,7 @@ export class RegisterComponent {
           this.errorMessage = 'Das Passwort ist zu schwach.';
           break;
         default:
-          this.errorMessage = 'Ein Fehler ist aufgetreten: ' + error.message;
+          this.errorMessage = `Ein Fehler ist aufgetreten: ${error.message}`;
       }
     } finally {
       this.isLoading = false;

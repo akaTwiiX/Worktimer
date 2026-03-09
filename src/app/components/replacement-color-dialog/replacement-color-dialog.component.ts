@@ -1,7 +1,7 @@
-import { Component, signal } from '@angular/core';
-import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
+import type { ThemeColors } from '../../color.themes';
+import { Component, inject, signal } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
-import { ThemeColors } from '../../color.themes';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'app-replacement-color-dialog',
@@ -11,15 +11,15 @@ import { ThemeColors } from '../../color.themes';
   styleUrl: './replacement-color-dialog.component.scss',
 })
 export class ReplacementColorDialogComponent {
+  public dialogRef = inject(DynamicDialogRef);
+  public config = inject(DynamicDialogConfig);
+
   newColorId = signal<number | null>(null);
 
-  data: { colors: ThemeColors[]; originalColor: ThemeColors };
+  data: { colors: ThemeColors[], originalColor: ThemeColors, };
 
-  constructor(
-    public dialogRef: DynamicDialogRef,
-    public config: DynamicDialogConfig
-  ) {
-    this.data = config.data;
+  constructor() {
+    this.data = this.config.data;
   }
 
   onCancel(): void {

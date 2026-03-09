@@ -1,6 +1,10 @@
 {
   "name": "worktimer",
   "version": "0.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -9,7 +13,9 @@
     "test": "ng test",
     "prebuild:prod": "node ./scripts/set-env.js",
     "build:prod": "ng build --configuration production --base-href=/Worktimer/",
-    "postbuild:prod": "node ./scripts/generate-404.js"
+    "postbuild:prod": "node ./scripts/generate-404.js",
+    "lint": "eslint \"src/**/*.{js,ts,html}\"",
+    "lint:fix": "eslint \"src/**/*.{js,ts,html}\" --fix"
   },
   "private": true,
   "dependencies": {
@@ -47,6 +53,8 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.9.3"
+    "typescript": "~5.9.3",
+    "eslint": "10.0.3",
+    "@antfu/eslint-config": "7.7.0"
   }
 }

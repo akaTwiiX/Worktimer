@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import type { OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ThemeService } from './theme.service';
 
@@ -6,12 +7,11 @@ import { ThemeService } from './theme.service';
   selector: 'app-root',
   imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
   title = 'Worktimer';
-
-  constructor(private themeService: ThemeService) { }
+  private themeService = inject(ThemeService);
 
   ngOnInit(): void {
     this.themeService.loadTheme();

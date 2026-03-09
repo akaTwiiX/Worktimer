@@ -3,7 +3,7 @@ import { Injectable, signal } from '@angular/core';
 export type ThemeMode = 'light' | 'dark' | 'system';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ThemeService {
   private readonly THEME_KEY = 'app-theme';
@@ -12,7 +12,7 @@ export class ThemeService {
   private systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 
   constructor() {
-    this.systemPrefersDark.addEventListener('change', (e) => {
+    this.systemPrefersDark.addEventListener('change', () => {
       if (this.currentTheme() === 'system') {
         this.applyTheme('system');
       }

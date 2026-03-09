@@ -1,15 +1,17 @@
-import { Component, OnDestroy, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef, inject, effect } from '@angular/core';
-import { FullCalendarComponent, FullCalendarModule } from '@fullcalendar/angular';
-import { CalendarOptions, EventInput } from '@fullcalendar/core';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, query, where } from 'firebase/firestore';
-import { auth, db } from '../../firebase-config';
-import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
-import { ButtonModule } from 'primeng/button';
+import type { OnDestroy } from '@angular/core';
+import type { FullCalendarComponent } from '@fullcalendar/angular';
+import type { CalendarOptions, EventInput } from '@fullcalendar/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, inject, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import { addDoc, collection, deleteDoc, doc, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
+import { ButtonModule } from 'primeng/button';
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { EventDialogComponent } from '../../components/event-dialog/event-dialog.component';
+import { auth, db } from '../../firebase-config';
 import { SettingsService } from '../../settings.service';
 
 @Component({
@@ -19,7 +21,7 @@ import { SettingsService } from '../../settings.service';
   providers: [DialogService],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarComponent implements OnDestroy {
   @ViewChild('calendar') calendarRef!: FullCalendarComponent;
@@ -36,7 +38,7 @@ export class CalendarComponent implements OnDestroy {
     headerToolbar: {
       left: 'prev,next',
       center: 'title',
-      right: 'today'
+      right: 'today',
     },
     eventStartEditable: true,
     eventDurationEditable: true,
@@ -50,7 +52,7 @@ export class CalendarComponent implements OnDestroy {
     datesSet: this.handleDatesSet.bind(this),
     eventContent: (arg) => {
       return { html: arg.event.title };
-    }
+    },
   };
 
   private settingsService = inject(SettingsService);
@@ -66,8 +68,10 @@ export class CalendarComponent implements OnDestroy {
   private lastSnapshotDocs: any[] | null = null;
   private currentMonthStartISO: string = '';
   private currentMonthEndISO: string = '';
+  private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
 
-  constructor(private router: Router, private cdr: ChangeDetectorRef) {
+  constructor() {
     effect(() => {
       const colors = this.settingsService.settings().themeColors;
       if (this.lastSnapshotDocs) {
@@ -110,10 +114,10 @@ export class CalendarComponent implements OnDestroy {
     };
 
     worker.postMessage({
-      docs: docs,
-      colors: colors,
+      docs,
+      colors,
       currentMonthStart: this.currentMonthStartISO,
-      currentMonthEnd: this.currentMonthEndISO
+      currentMonthEnd: this.currentMonthEndISO,
     });
   }
 
@@ -138,13 +142,14 @@ export class CalendarComponent implements OnDestroy {
       this.unsubscribe();
     }
     const user = auth.currentUser;
-    if (!user) return;
+    if (!user)
+      return;
 
     const eventsCollection = collection(db, user.uid);
     const q = query(
       eventsCollection,
       where('start', '>=', monthStart.toISOString()),
-      where('start', '<=', monthEnd.toISOString())
+      where('start', '<=', monthEnd.toISOString()),
     );
 
     this.unsubscribe = onSnapshot(
@@ -155,7 +160,7 @@ export class CalendarComponent implements OnDestroy {
       },
       (error) => {
         console.error('Error loading events:', error);
-      }
+      },
     );
   }
 
@@ -172,11 +177,12 @@ export class CalendarComponent implements OnDestroy {
         width: '300px',
         data: { isNew: true },
         closable: true,
-        dismissableMask: true
+        dismissableMask: true,
       });
 
       ref?.onClose.subscribe(async (result) => {
-        if (!result) return;
+        if (!result)
+          return;
 
         const newEvent = {
           title: result.title,
@@ -185,7 +191,7 @@ export class CalendarComponent implements OnDestroy {
           allDay: true,
           backgroundColor: result.backgroundColor,
           borderColor: result.backgroundColor,
-          textColor: '#000000'
+          textColor: '#000000',
         };
 
         try {
@@ -205,14 +211,15 @@ export class CalendarComponent implements OnDestroy {
         isNew: false,
         id: eventForDay.id,
         title: eventForDay.title,
-        colorId: eventForDay.extendedProps?.['colorId']
+        colorId: (eventForDay.extendedProps as { colorId?: string, })?.colorId,
       },
       closable: true,
-      dismissableMask: true
+      dismissableMask: true,
     });
 
     ref?.onClose.subscribe(async (result) => {
-      if (!result) return;
+      if (!result)
+        return;
 
       const eventDoc = doc(db, auth.currentUser!.uid, eventForDay.id!);
 
@@ -227,7 +234,7 @@ export class CalendarComponent implements OnDestroy {
             allDay: true,
             backgroundColor: result.backgroundColor,
             borderColor: result.backgroundColor,
-            textColor: '#000000'
+            textColor: '#000000',
           };
           await updateDoc(eventDoc, updatedEvent);
         }

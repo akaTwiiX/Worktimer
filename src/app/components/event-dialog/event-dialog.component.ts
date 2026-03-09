@@ -1,14 +1,16 @@
-import { Component, Inject, inject, computed } from '@angular/core';
-import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
-import { InputTextModule } from 'primeng/inputtext';
-import { FloatLabelModule } from 'primeng/floatlabel';
+import type { ThemeColors } from '../../color.themes';
+import { Component, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputTextModule } from 'primeng/inputtext';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
-import { ThemeColors } from '../../color.themes';
-import { SettingsService } from '../../settings.service';
 import { TimeFormatDirective } from '../../directives/time-format.directive';
+import { SettingsService } from '../../settings.service';
+
+const TIME_PREFIX_REGEX = /^\d/;
 
 @Component({
   selector: 'app-event-dialog',
@@ -19,13 +21,15 @@ import { TimeFormatDirective } from '../../directives/time-format.directive';
     ButtonModule,
     RadioButtonModule,
     ToggleSwitchModule,
-    TimeFormatDirective
+    TimeFormatDirective,
   ],
   templateUrl: './event-dialog.component.html',
-  styleUrl: './event-dialog.component.scss'
+  styleUrl: './event-dialog.component.scss',
 })
 export class EventDialogComponent {
   private settingsService = inject(SettingsService);
+  public dialogRef = inject(DynamicDialogRef);
+  public config = inject(DynamicDialogConfig);
 
   eventData = { title: '', backgroundColor: 0, selection: 0 };
 
@@ -35,7 +39,7 @@ export class EventDialogComponent {
 
   sortedColors = computed(() => {
     const colors = [...this.colors];
-    const isTime = (label: string) => /^\d/.test(label) && label.includes('-');
+    const isTime = (label: string) => TIME_PREFIX_REGEX.test(label) && label.includes('-');
     const parseTime = (timeStr: string) => {
       const [hours, minutes] = timeStr.trim().split(':').map(Number);
       return (hours || 0) * 60 + (minutes || 0);
@@ -45,8 +49,10 @@ export class EventDialogComponent {
       const isTimeA = isTime(a.label);
       const isTimeB = isTime(b.label);
 
-      if (!isTimeA && isTimeB) return -1;
-      if (isTimeA && !isTimeB) return 1;
+      if (!isTimeA && isTimeB)
+        return -1;
+      if (isTimeA && !isTimeB)
+        return 1;
 
       if (!isTimeA && !isTimeB) {
         return a.label.localeCompare(b.label);
@@ -63,11 +69,8 @@ export class EventDialogComponent {
 
   data: any;
 
-  constructor(
-    public dialogRef: DynamicDialogRef,
-    public config: DynamicDialogConfig
-  ) {
-    this.data = config.data;
+  constructor() {
+    this.data = this.config.data;
     if (!this.data.isNew) {
       const textData = this.data.title.split('<small>Kasse:</small>');
       this.eventData.title = textData[0].trim();
@@ -100,7 +103,7 @@ export class EventDialogComponent {
   onSave(): void {
     this.dialogRef.close({
       title: this.setTitle(),
-      backgroundColor: this.eventData.backgroundColor
+      backgroundColor: this.eventData.backgroundColor,
     });
   }
 

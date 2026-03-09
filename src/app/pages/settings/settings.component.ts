@@ -1,18 +1,19 @@
-import { Component, OnInit, signal, computed, inject, effect } from '@angular/core';
-import { Router } from '@angular/router';
-import { auth, db } from '../../firebase-config';
-import { ButtonModule } from 'primeng/button';
-import { ThemeToggleComponent } from '../../components/theme-toggle/theme-toggle.component';
-import { ColorPickerComponent } from '../../components/color-picker/color-picker.component';
+import type { OnInit } from '@angular/core';
+import type { ThemeColors } from '../../color.themes';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ThemeColors } from '../../color.themes';
-import { query, where, collection, getDocs, writeBatch, doc } from 'firebase/firestore';
+import { Router } from '@angular/router';
+import { collection, doc, getDocs, query, where, writeBatch } from 'firebase/firestore';
 import { MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
+import { ButtonModule } from 'primeng/button';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
+import { ToastModule } from 'primeng/toast';
+import { ColorPickerComponent } from '../../components/color-picker/color-picker.component';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 import { LabelEditDialogComponent } from '../../components/label-edit-dialog/label-edit-dialog.component';
 import { ReplacementColorDialogComponent } from '../../components/replacement-color-dialog/replacement-color-dialog.component';
-import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
+import { ThemeToggleComponent } from '../../components/theme-toggle/theme-toggle.component';
+import { auth, db } from '../../firebase-config';
 import { SettingsService } from '../../settings.service';
 
 @Component({
@@ -20,7 +21,7 @@ import { SettingsService } from '../../settings.service';
   imports: [ButtonModule, ThemeToggleComponent, ColorPickerComponent, FormsModule, ToastModule, DynamicDialogModule],
   providers: [MessageService, DialogService],
   templateUrl: './settings.component.html',
-  styleUrl: './settings.component.scss'
+  styleUrl: './settings.component.scss',
 })
 export class SettingsComponent implements OnInit {
   themeColors = signal<ThemeColors[]>([]);
@@ -34,8 +35,9 @@ export class SettingsComponent implements OnInit {
   private settingsService = inject(SettingsService);
   private dialogService = inject(DialogService);
   private messageService = inject(MessageService);
+  private router = inject(Router);
 
-  constructor(private router: Router) {
+  constructor() {
     effect(() => {
       const settings = this.settingsService.settings();
       if (settings) {
@@ -53,14 +55,16 @@ export class SettingsComponent implements OnInit {
 
   async saveSettings() {
     const user = auth.currentUser;
-    if (!user) return;
+    if (!user)
+      return;
 
     this.isSaving.set(true);
     try {
-      if (!this.hasChanges()) return;
+      if (!this.hasChanges())
+        return;
 
       await this.settingsService.saveSettings({
-        themeColors: this.themeColors()
+        themeColors: this.themeColors(),
       });
 
       this.messageService.add({ severity: 'success', summary: 'Erfolg', detail: 'Einstellungen gespeichert' });
@@ -86,7 +90,7 @@ export class SettingsComponent implements OnInit {
       closable: true,
     });
 
-    ref?.onClose.subscribe(result => {
+    ref?.onClose.subscribe((result) => {
       if (result) {
         const existingIds = this.themeColors().map(c => c.id);
         const newId = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].find(id => !existingIds.includes(id)) ?? 0;
@@ -95,7 +99,7 @@ export class SettingsComponent implements OnInit {
           id: newId,
           value: '#613DA2', // Default color
           label: result.label,
-          isActive: result.isActive
+          isActive: result.isActive,
         };
 
         this.themeColors.set([...this.themeColors(), newColor]);
@@ -110,10 +114,12 @@ export class SettingsComponent implements OnInit {
     }
 
     const user = auth.currentUser;
-    if (!user) return;
+    if (!user)
+      return;
 
     const confirmed = await this.confirmDialog('Farbe löschen', `Möchtest du die Farbe "${color.label}" wirklich löschen?`, 'Löschen');
-    if (!confirmed) return;
+    if (!confirmed)
+      return;
 
     this.replaceColorId(color);
     this.themeColors.set(this.themeColors().filter(c => c.id !== color.id));
@@ -122,7 +128,8 @@ export class SettingsComponent implements OnInit {
 
   async replaceColorId(themeColor: ThemeColors) {
     const user = auth.currentUser;
-    if (!user) return;
+    if (!user)
+      return;
     const eventsRef = collection(db, user.uid);
     const q = query(eventsRef, where('backgroundColor', '==', themeColor.id));
     const querySnapshot = await getDocs(q);
@@ -135,10 +142,10 @@ export class SettingsComponent implements OnInit {
         header: 'Farbe ersetzen',
         width: '400px',
         dismissableMask: true,
-        data: { colors: otherColors, originalColor: themeColor }
+        data: { colors: otherColors, originalColor: themeColor },
       });
 
-      replacementId = await new Promise<number | undefined>(resolve => {
+      replacementId = await new Promise<number | undefined>((resolve) => {
         ref?.onClose.subscribe(res => resolve(res));
       });
 
@@ -149,7 +156,7 @@ export class SettingsComponent implements OnInit {
       }
 
       const batch = writeBatch(db);
-      querySnapshot.forEach(eventDoc => {
+      querySnapshot.forEach((eventDoc) => {
         batch.update(doc(db, user.uid, eventDoc.id), { backgroundColor: replacementId });
       });
       await batch.commit();
@@ -163,7 +170,8 @@ export class SettingsComponent implements OnInit {
 
   async logout() {
     const confirmed = await this.confirmDialog('Ausloggen', 'Möchtest du dich wirklich ausloggen?', 'Ausloggen');
-    if (!confirmed) return;
+    if (!confirmed)
+      return;
 
     await auth.signOut();
     this.router.navigate(['/login']);
@@ -172,7 +180,8 @@ export class SettingsComponent implements OnInit {
   async back() {
     if (this.hasChanges()) {
       const confirmed = await this.confirmDialog('Änderungen verwerfen', 'Möchtest du die Änderungen wirklich verwerfen?', 'Verwerfen');
-      if (!confirmed) return;
+      if (!confirmed)
+        return;
     }
 
     this.router.navigate(['/calendar']);
@@ -184,13 +193,13 @@ export class SettingsComponent implements OnInit {
       width: '350px',
       dismissableMask: true,
       data: {
-        title: title,
-        message: message,
-        confirmText: confirmText
-      }
+        title,
+        message,
+        confirmText,
+      },
     });
 
-    const confirmed = await new Promise<boolean>(resolve => {
+    const confirmed = await new Promise<boolean>((resolve) => {
       ref?.onClose.subscribe(res => resolve(!!res));
     });
 

@@ -1,13 +1,13 @@
-import { Component } from '@angular/core';
-import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, inject } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { signInWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { auth } from '../../firebase-config';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { InputTextModule } from 'primeng/inputtext';
-import { FloatLabelModule } from 'primeng/floatlabel';
+import { sendEmailVerification, signInWithEmailAndPassword } from 'firebase/auth';
 import { ButtonModule } from 'primeng/button';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { auth } from '../../firebase-config';
 
 @Component({
   selector: 'app-login',
@@ -19,10 +19,10 @@ import { MessageModule } from 'primeng/message';
     InputTextModule,
     FloatLabelModule,
     ButtonModule,
-    MessageModule
+    MessageModule,
   ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
   emailFormControl = new FormControl('', [Validators.required, Validators.email]);
@@ -31,14 +31,15 @@ export class LoginComponent {
   emailNotVerified = false;
   verificationEmailSent = false;
   isLoading = true;
+  private router = inject(Router);
 
-  constructor(private router: Router) {
+  constructor() {
     auth.onAuthStateChanged((user) => {
       this.isLoading = false;
       if (user && user.emailVerified) {
         this.router.navigate(['/']);
       }
-    })
+    });
   }
 
   async login() {
@@ -81,7 +82,7 @@ export class LoginComponent {
           this.errorMessage = 'Netzwerkfehler. Bitte überprüfen Sie Ihre Internetverbindung.';
           break;
         default:
-          this.errorMessage = 'Ein Fehler ist aufgetreten: ' + error.message;
+          this.errorMessage = `Ein Fehler ist aufgetreten: ${error.message}`;
       }
     } finally {
       this.isLoading = false;
@@ -97,7 +98,7 @@ export class LoginComponent {
         console.log('Verification email resent');
       } catch (error: any) {
         console.error('Error sending verification email:', error);
-        this.errorMessage = 'Fehler beim Senden der E-Mail: ' + error.message;
+        this.errorMessage = `Fehler beim Senden der E-Mail: ${error.message}`;
       }
     }
   }
