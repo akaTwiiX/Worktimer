@@ -1,23 +1,21 @@
-import { Component, Inject } from '@angular/core';
-
+import { Component } from '@angular/core';
+import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { FormsModule } from '@angular/forms';
-import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { InputTextModule } from 'primeng/inputtext';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @Component({
     selector: 'app-label-edit-dialog',
     standalone: true,
     imports: [
-    FormsModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCheckboxModule
-],
+        FormsModule,
+        InputTextModule,
+        FloatLabelModule,
+        ButtonModule,
+        CheckboxModule
+    ],
     templateUrl: './label-edit-dialog.component.html',
     styleUrl: './label-edit-dialog.component.scss'
 })
@@ -26,11 +24,11 @@ export class LabelEditDialogComponent {
     isActive: boolean;
 
     constructor(
-        public dialogRef: MatDialogRef<LabelEditDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: { label: string, title?: string, isActive: boolean }
+        public dialogRef: DynamicDialogRef,
+        public config: DynamicDialogConfig<{ label: string; title?: string; isActive: boolean }>
     ) {
-        this.newLabel = data.label;
-        this.isActive = data.isActive;
+        this.newLabel = config.data!.label;
+        this.isActive = config.data!.isActive ?? false;
     }
 
     onCancel(): void {
@@ -39,5 +37,11 @@ export class LabelEditDialogComponent {
 
     onSave(): void {
         this.dialogRef.close({ label: this.newLabel, isActive: this.isActive });
+    }
+
+    isDisabled(): boolean {
+        const isLabelEmpty = this.newLabel.length === 0;
+        const noChanges = this.newLabel === this.config.data!.label && this.isActive === (this.config.data!.isActive ?? false);
+        return isLabelEmpty || noChanges;
     }
 }

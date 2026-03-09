@@ -6,18 +6,17 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, query, where } from 'firebase/firestore';
 import { auth, db } from '../../firebase-config';
-import { MatDialog } from '@angular/material/dialog';
-import { Colors } from '../../color.themes';
-import { MatButtonModule } from '@angular/material/button';
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
+import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
 import { EventDialogComponent } from '../../components/event-dialog/event-dialog.component';
-import { MatIconModule } from '@angular/material/icon';
 import { SettingsService } from '../../settings.service';
 
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [FullCalendarModule, MatButtonModule, MatIconModule],
+  imports: [FullCalendarModule, ButtonModule, DynamicDialogModule],
+  providers: [DialogService],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -55,6 +54,7 @@ export class CalendarComponent implements OnDestroy {
   };
 
   private settingsService = inject(SettingsService);
+  private dialogService = inject(DialogService);
   private unsubscribe: (() => void) | null = null;
   private touchStartX = 0;
   private touchEndX = 0;
@@ -67,7 +67,7 @@ export class CalendarComponent implements OnDestroy {
   private currentMonthStartISO: string = '';
   private currentMonthEndISO: string = '';
 
-  constructor(private dialog: MatDialog, private router: Router, private cdr: ChangeDetectorRef) {
+  constructor(private router: Router, private cdr: ChangeDetectorRef) {
     effect(() => {
       const colors = this.settingsService.settings().themeColors;
       if (this.lastSnapshotDocs) {
@@ -167,13 +167,15 @@ export class CalendarComponent implements OnDestroy {
     });
 
     if (!eventForDay) {
-      const dialogRef = this.dialog.open(EventDialogComponent, {
-        width: '250px',
+      const ref = this.dialogService.open(EventDialogComponent, {
+        header: 'Neue Arbeitszeit',
+        width: '300px',
         data: { isNew: true },
-        autoFocus: false
+        closable: true,
+        dismissableMask: true
       });
 
-      dialogRef.afterClosed().subscribe(async (result) => {
+      ref?.onClose.subscribe(async (result) => {
         if (!result) return;
 
         const newEvent = {
@@ -196,18 +198,20 @@ export class CalendarComponent implements OnDestroy {
       return;
     }
 
-    const dialogRef = this.dialog.open(EventDialogComponent, {
-      width: '250px',
+    const ref = this.dialogService.open(EventDialogComponent, {
+      header: 'Arbeitszeit bearbeiten',
+      width: '300px',
       data: {
         isNew: false,
         id: eventForDay.id,
         title: eventForDay.title,
         colorId: eventForDay.extendedProps?.['colorId']
       },
-      autoFocus: false
+      closable: true,
+      dismissableMask: true
     });
 
-    dialogRef.afterClosed().subscribe(async (result) => {
+    ref?.onClose.subscribe(async (result) => {
       if (!result) return;
 
       const eventDoc = doc(db, auth.currentUser!.uid, eventForDay.id!);

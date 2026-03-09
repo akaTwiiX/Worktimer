@@ -1,8 +1,7 @@
-<h2 mat-dialog-title>{{ data.title }}</h2>
-<mat-dialog-content>
+<div class="confirm-dialog">
     <p>{{ data.message }}</p>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-    <button mat-button (click)="onCancel()">Abbrechen</button>
-    <button mat-raised-button color="warn" (click)="onConfirm()">{{ data.confirmText || 'OK' }}</button>
-</mat-dialog-actions>
+    <div class="actions">
+        <p-button label="Abbrechen" severity="secondary" [outlined]="true" (onClick)="onCancel()" />
+        <p-button [label]="data.confirmText || 'OK'" severity="danger" (onClick)="onConfirm()" />
+    </div>
+</div>

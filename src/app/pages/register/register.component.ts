@@ -3,10 +3,11 @@ import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angu
 import { Router, RouterModule } from '@angular/router';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth } from '../../firebase-config';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { InputTextModule } from 'primeng/inputtext';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { ButtonModule } from 'primeng/button';
+import { MessageModule } from 'primeng/message';
 
 @Component({
   selector: 'app-register',
@@ -14,10 +15,11 @@ import { MatButtonModule } from '@angular/material/button';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    MatProgressSpinnerModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule
+    ProgressSpinnerModule,
+    InputTextModule,
+    FloatLabelModule,
+    ButtonModule,
+    MessageModule
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
@@ -33,8 +35,7 @@ export class RegisterComponent {
   constructor(private router: Router) { }
 
   async register() {
-    if (!this.emailFormControl.valid || !this.passwordFormControl.valid || !this.passwordConfirmFormControl.valid) {
-      this.errorMessage = 'Bitte füllen Sie alle Felder korrekt aus.';
+    if (!this.emailFormControl.value || !this.passwordFormControl.value || !this.passwordConfirmFormControl.value) {
       return;
     }
 
@@ -43,27 +44,22 @@ export class RegisterComponent {
       return;
     }
 
-    this.isLoading = true;
-    this.errorMessage = '';
-    this.successMessage = '';
-
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        this.emailFormControl.value!,
-        this.passwordFormControl.value!
-      );
+      this.isLoading = true;
+      this.errorMessage = '';
+      this.successMessage = '';
+
+      const userCredential = await createUserWithEmailAndPassword(auth, this.emailFormControl.value, this.passwordFormControl.value);
       const user = userCredential.user;
-      console.log('User successfully registered:', user);
+      console.log('Successfully registered:', user);
 
       await sendEmailVerification(user);
       console.log('Verification email sent');
 
-      this.successMessage = 'Registrierung erfolgreich! Bitte überprüfen Sie Ihr E-Mail-Postfach und bestätigen Sie Ihre E-Mail-Adresse.';
+      this.successMessage = 'Registrierung erfolgreich! Bitte überprüfen Sie Ihre E-Mails zur Verifizierung.';
 
-      setTimeout(() => {
-        this.router.navigate(['/login']);
-      }, 3000);
+      // Optional: Redirect after a few seconds
+      // setTimeout(() => this.router.navigate(['/login']), 5000);
 
     } catch (error: any) {
       console.error('Registration error:', error);
@@ -75,8 +71,11 @@ export class RegisterComponent {
         case 'auth/invalid-email':
           this.errorMessage = 'Ungültige E-Mail-Adresse.';
           break;
+        case 'auth/operation-not-allowed':
+          this.errorMessage = 'E-Mail/Passwort-Registrierung ist nicht aktiviert.';
+          break;
         case 'auth/weak-password':
-          this.errorMessage = 'Das Passwort ist zu schwach. Bitte verwenden Sie mindestens 8 Zeichen.';
+          this.errorMessage = 'Das Passwort ist zu schwach.';
           break;
         default:
           this.errorMessage = 'Ein Fehler ist aufgetreten: ' + error.message;

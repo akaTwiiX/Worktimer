@@ -1,15 +1,7 @@
-<mat-button-toggle-group 
-    [value]="themeService.currentTheme()" 
-    (change)="onThemeChange($event.value)"
-    aria-label="Theme selector"
-    [hideSingleSelectionIndicator]="true">
-    <mat-button-toggle value="light">
-        ☀️ 
-    </mat-button-toggle>
-    <mat-button-toggle value="dark">
-        🌙 
-    </mat-button-toggle>
-    <mat-button-toggle value="system">
-        💻 
-    </mat-button-toggle>
-</mat-button-toggle-group>
+<p-selectbutton
+    [options]="themeOptions"
+    [ngModel]="themeService.currentTheme()"
+    (ngModelChange)="onThemeChange($event)"
+    optionLabel="label"
+    optionValue="value"
+    aria-label="Theme selector" />

@@ -1,36 +1,57 @@
 <div class="login">
     @if (isLoading) {
-    <mat-spinner></mat-spinner>
+    <p-progressspinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="transparent" animationDuration=".5s" />
     } @else {
     <form class="login-form">
         <div>
             <h2>Login</h2>
         </div>
-        
-        <mat-form-field appearance="outline">
-            <mat-label>Email</mat-label>
-            <input matInput type="email" [formControl]="emailFormControl" placeholder="beispiel@email.de">
+        <div>
+            <p-floatlabel class="full-width" variant="on">
+                <input 
+                    pInputText 
+                    id="email" 
+                    type="email" 
+                    class="full-width" 
+                    [formControl]="emailFormControl" 
+                    [invalid]="emailFormControl.invalid && emailFormControl.touched" 
+                    autocomplete="email"
+                />
+                <label for="email">Email</label>
+            </p-floatlabel>
             @if (emailFormControl.hasError('email') && !emailFormControl.hasError('required')) {
-            <mat-error>Bitte geben Sie eine gültige E-Mail-Adresse ein</mat-error>
+                <p-message severity="error" size="small" variant="simple">
+                    Bitte geben Sie eine gültige E-Mail-Adresse ein
+                </p-message>
             }
-            @if (emailFormControl.hasError('required')) {
-            <mat-error>E-Mail ist erforderlich</mat-error>
+            @if (emailFormControl.hasError('required') && emailFormControl.touched) {
+                <p-message severity="error" size="small" variant="simple">
+                    E-Mail ist erforderlich
+                </p-message>
             }
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-            <mat-label>Passwort</mat-label>
-            <input matInput type="password" [formControl]="passwordFormControl" placeholder="Passwort">
-            @if (passwordFormControl.hasError('minlength')) {
-            <mat-error>Passwort muss mindestens 8 Zeichen lang sein</mat-error>
+        </div>
+        <div class="full-width">
+            <p-floatlabel class="full-width mt-4" variant="on">
+                <input 
+                    pInputText 
+                    id="password" 
+                    type="password" 
+                    class="full-width" 
+                    [formControl]="passwordFormControl" 
+                    [invalid]="passwordFormControl.invalid && passwordFormControl.touched" 
+                    autocomplete="current-password"
+                />
+                <label for="password">Passwort</label>
+            </p-floatlabel>
+            @if (passwordFormControl.hasError('required') && passwordFormControl.touched) {
+                <p-message severity="error" size="small" variant="simple">
+                    Passwort ist erforderlich
+                </p-message>
             }
-            @if (passwordFormControl.hasError('required')) {
-            <mat-error>Passwort ist erforderlich</mat-error>
-            }
-        </mat-form-field>
+        </div>
 
         @if (errorMessage) {
-        <div class="message error">{{errorMessage}}</div>
+        <p-message severity="error" size="small" variant="simple">{{errorMessage}}</p-message>
         }
         
         @if (emailNotVerified) {
@@ -40,19 +61,23 @@
             @if (verificationEmailSent) {
             <p class="success-text">✓ Verifikations-E-Mail wurde erneut gesendet!</p>
             } @else {
-            <button mat-stroked-button color="accent" (click)="resendVerificationEmail()">
-                Verifikations-E-Mail erneut senden
-            </button>
+            <p-button 
+                label="Verifikations-E-Mail erneut senden" 
+                severity="secondary" 
+                [outlined]="true" 
+                (onClick)="resendVerificationEmail()" 
+            />
             }
         </div>
         }
 
         <div class="btn-container">
-            <button mat-raised-button color="primary" 
-                    [disabled]="!emailFormControl.valid || !passwordFormControl.valid"
-                    (click)="login()">
-                Einloggen
-            </button>
+            <p-button 
+                label="Einloggen" 
+                severity="primary" 
+                [disabled]="!emailFormControl.valid || passwordFormControl.value?.length === 0"
+                (onClick)="login()" 
+            />
         </div>
 
         <div class="link-container">

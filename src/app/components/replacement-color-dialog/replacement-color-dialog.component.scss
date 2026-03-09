@@ -26,3 +26,9 @@
     border-radius: 50%;
     border: 1px solid rgba(0, 0, 0, 0.1);
 }
+
+.dialog-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+}

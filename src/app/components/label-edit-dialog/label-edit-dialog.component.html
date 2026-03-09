@@ -1,12 +1,15 @@
-<h2 mat-dialog-title>{{ data.title || 'Label bearbeiten' }}</h2>
-<mat-dialog-content class="dialog-content">
-  <mat-checkbox [(ngModel)]="isActive">Aktiv als Standardauswahl</mat-checkbox>
-  <mat-form-field appearance="outline">
-    <mat-label>Label Name</mat-label>
-    <input matInput [(ngModel)]="newLabel" placeholder="Z.B. Teambesprechung" maxlength="10" (keyup.enter)="onSave()">
-  </mat-form-field>
-</mat-dialog-content>
-<mat-dialog-actions class="dialog-actions">
-  <button mat-button (click)='onCancel()'>Abbrechen</button>
-  <button mat-raised-button color="primary" (click)="onSave()">Speichern</button>
-</mat-dialog-actions>
+<div class="dialog-content">
+    <div class="checkbox-container">
+        <p-checkbox [(ngModel)]="isActive" [binary]="true" inputId="isActiveCheck"/>
+        <label for="isActiveCheck">Aktiv als Standardauswahl</label>
+    </div>
+    <p-floatlabel class="full-width" variant="on">
+        <input pInputText id="label-name" [(ngModel)]="newLabel" placeholder="Z.B. Teambesprechung"
+            maxlength="10" (keyup.enter)="onSave()" class="full-width" />
+        <label for="label-name">Label Name</label>
+    </p-floatlabel>
+</div>
+<div class="dialog-actions">
+    <p-button label="Abbrechen" severity="secondary" [outlined]="true" (onClick)="onCancel()" />
+    <p-button [disabled]="isDisabled()" label="Speichern" severity="primary" (onClick)="onSave()" />
+</div>

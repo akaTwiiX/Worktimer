@@ -1,12 +1,19 @@
+<p-toast position="top-center" />
 <div class="container">
     <div class="header">
-        <button color="accent" mat-button (click)="back()">
-            <mat-icon>arrow_back</mat-icon>
-            Zurück
-        </button>
-        <button mat-button color="warn" (click)="logout()">
-            Ausloggen
-        </button>
+        <p-button 
+            label="Zurück" 
+            icon="pi pi-arrow-left" 
+            severity="secondary" 
+            [text]="true"
+            (onClick)="back()" 
+        />
+        <p-button 
+            label="Ausloggen" 
+            severity="danger" 
+            [text]="true"
+            (onClick)="logout()" 
+        />
     </div>
     <div class="content">
         <div class="theme-toggle">
@@ -28,21 +35,29 @@
                         (isActiveChange)="markDirty()"
                         (delete)="deleteColor(color)"/>
                 }
-            </div>
-            @if (themeColors().length < 10) {
-                <button mat-stroked-button color="accent" class="add-color-button" (click)="addColor()">
-                    <mat-icon>add</mat-icon>
-                    Farbe hinzufügen
-                </button>
+                @if (themeColors().length < 10) {
+                <p-button 
+                    label="Farbe hinzufügen" 
+                    icon="pi pi-plus" 
+                    severity="contrast" 
+                    [outlined]="true"
+                    class="add-color-button" 
+                    (onClick)="addColor()" 
+                />
             }
-            <button mat-raised-button color="primary" class="save-button" [class.save-button-hidden]="!hasChanges()" (click)="saveSettings()" [disabled]="isSaving() || !hasChanges()">
-                @if (isSaving()) {
-                    Speichern...
-                } @else {
-                    Speichern
-                }
-            </button>
+            @if(hasChanges()){
+                <div class="margin-bottom-6rem"></div>
+            }
+            </div>
+            
+            <p-button 
+                [label]="isSaving() ? 'Speichern...' : 'Speichern'" 
+                severity="primary" 
+                class="save-button" 
+                [class.save-button-hidden]="!hasChanges()" 
+                (onClick)="saveSettings()" 
+                [disabled]="isSaving() || !hasChanges()" 
+            />
         </div>
-        
     </div>
 </div>

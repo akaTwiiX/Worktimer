@@ -1,21 +1,22 @@
 import { Component, inject, input, model, output } from '@angular/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
+import { ButtonModule } from 'primeng/button';
 import { LabelEditDialogComponent } from '../label-edit-dialog/label-edit-dialog.component';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 
 @Component({
     selector: 'app-color-picker',
     standalone: true,
-    imports: [MatFormFieldModule, MatInputModule, MatDialogModule, MatIconModule, MatButtonModule],
+    imports: [InputTextModule, FloatLabelModule, DynamicDialogModule, ButtonModule, InputGroupModule, InputGroupAddonModule],
+    providers: [DialogService],
     templateUrl: './color-picker.component.html',
     styleUrl: './color-picker.component.scss'
 })
 export class ColorPickerComponent {
-    private dialog = inject(MatDialog);
+    private dialogService = inject(DialogService);
 
     label = model<string>('Farbe wählen');
     isActive = model<boolean>(false);
@@ -32,11 +33,14 @@ export class ColorPickerComponent {
     }
 
     openEditDialog() {
-        const dialogRef = this.dialog.open(LabelEditDialogComponent, {
+        const ref = this.dialogService.open(LabelEditDialogComponent, {
+            header: 'Label bearbeiten',
+            width: '300px',
+            dismissableMask: true,
             data: { label: this.label(), isActive: this.isActive() }
         });
 
-        dialogRef.afterClosed().subscribe(result => {
+        ref?.onClose.subscribe(result => {
             if (result) {
                 this.label.set(result.label);
                 this.isActive.set(result.isActive);

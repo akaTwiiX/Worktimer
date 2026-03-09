@@ -83,6 +83,11 @@ body {
     }
 }
 
+.full-width {
+    width: 100%;
+    display: block;
+}
+
 /* Theme smooth transitions */
 * {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;

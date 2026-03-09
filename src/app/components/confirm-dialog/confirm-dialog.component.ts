@@ -1,19 +1,23 @@
 import { Component, Inject } from '@angular/core';
-
-import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
+import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-confirm-dialog',
   standalone: true,
-  imports: [MatDialogModule, MatButtonModule],
+  imports: [ButtonModule],
   templateUrl: './confirm-dialog.component.html',
+  styleUrl: './confirm-dialog.component.scss'
 })
 export class ConfirmDialogComponent {
+  data: { title: string; message: string; confirmText?: string };
+
   constructor(
-    public dialogRef: MatDialogRef<ConfirmDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { title: string, message: string, confirmText?: string }
-  ) { }
+    public dialogRef: DynamicDialogRef,
+    public config: DynamicDialogConfig
+  ) {
+    this.data = config.data;
+  }
 
   onCancel(): void {
     this.dialogRef.close(false);

@@ -3,10 +3,11 @@ import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angu
 import { Router, RouterModule } from '@angular/router';
 import { signInWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth } from '../../firebase-config';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { InputTextModule } from 'primeng/inputtext';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { ButtonModule } from 'primeng/button';
+import { MessageModule } from 'primeng/message';
 
 @Component({
   selector: 'app-login',
@@ -14,17 +15,18 @@ import { MatButtonModule } from '@angular/material/button';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    MatProgressSpinnerModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule
+    ProgressSpinnerModule,
+    InputTextModule,
+    FloatLabelModule,
+    ButtonModule,
+    MessageModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
   emailFormControl = new FormControl('', [Validators.required, Validators.email]);
-  passwordFormControl = new FormControl('', [Validators.required, Validators.minLength(8)]);
+  passwordFormControl = new FormControl('', [Validators.required]);
   errorMessage = '';
   emailNotVerified = false;
   verificationEmailSent = false;
@@ -99,5 +101,4 @@ export class LoginComponent {
       }
     }
   }
-
 }

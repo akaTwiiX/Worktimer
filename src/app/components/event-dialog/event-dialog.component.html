@@ -1,49 +1,55 @@
 <div class="dialog">
-    <div>
-        <h3>{{ data.isNew ? 'Neue Arbeitszeit' : 'Arbeitszeit bearbeiten' }}</h3>
-        <mat-slide-toggle [checked]="isVisible" (change)="toggleVisibility($event)"></mat-slide-toggle>
+    <div class="dialog-toggle-row">
+        <!-- <h3>{{ data.isNew ? 'Neue Arbeitszeit' : 'Arbeitszeit bearbeiten' }}</h3> -->
+        <p-toggleswitch [(ngModel)]="isVisible" (onChange)="toggleVisibility($event.checked)" />
     </div>
+
     @if(isVisible){
-    <mat-form-field>
-        <mat-label>Ereignisname</mat-label>
-        <input type="text" matInput [(ngModel)]="eventData.title" required>
-    </mat-form-field>
+    <p-floatlabel variant="on">
+        <input pInputText id="event-title" [(ngModel)]="eventData.title" required  />
+        <label for="event-title">Ereignisname</label>
+    </p-floatlabel>
 
-    <mat-form-field>
-        <mat-label>Deine Kasse</mat-label>
-        <input type="number" matInput [(ngModel)]="eventData.selection">
-    </mat-form-field>
+    <p-floatlabel  variant="on">
+        <input pInputText id="event-selection" type="number" [(ngModel)]="eventData.selection" />
+        <label for="event-selection">Deine Kasse</label>
+    </p-floatlabel>
 
-
-    <mat-radio-group class="radio-btn" [(ngModel)]="eventData.backgroundColor">
+    <div class="radio-btn">
         @for (color of colors; track color) {
-        <mat-radio-button [value]="color.id">
-            <div class="color" [style.background-color]="color.value"></div>
-        </mat-radio-button>
+        <div class="radio-item">
+            <p-radiobutton [value]="color.id" [(ngModel)]="eventData.backgroundColor" [inputId]="'color-' + color.id" />
+            <label [for]="'color-' + color.id">
+                <div class="color" [style.background-color]="color.value"></div>
+            </label>
+        </div>
         }
-    </mat-radio-group>
-    }@else {
-    <mat-radio-group class="radio-btn" [(ngModel)]="eventData.backgroundColor" style="flex-direction: column;">
+    </div>
+    } @else {
+    <div class="radio-btn" style="flex-direction: column;">
         @for (color of sortedColors(); track color) {
         @if(color.isActive){
-        <mat-radio-button [value]="color.id" (click)="selectTime(color.label)">
-            <div class="time-selector" [style.background-color]="color.value">
-                <span [appTimeFormat]="color.label"></span>
-            </div>
-        </mat-radio-button>
+        <div class="radio-item">
+            <p-radiobutton [value]="color.id" [(ngModel)]="eventData.backgroundColor"
+                [inputId]="'time-' + color.id" (onClick)="selectTime(color.label)" />
+            <label [for]="'time-' + color.id">
+                <div class="time-selector" [style.background-color]="color.value">
+                    <span [appTimeFormat]="color.label"></span>
+                </div>
+            </label>
+        </div>
         }
         }
-
-
-    </mat-radio-group>
+    </div>
     }
 
-
-    <div mat-dialog-actions class="btn-container">
-        <button mat-button color="primary" (click)="onSave()">Speichern</button>
-        @if (!data.isNew) {
-        <button mat-button color="warn" (click)="onDelete()">Löschen</button>
-        }
-        <button mat-button (click)="onCancel()">Abbrechen</button>
+    <div class="btn-container">
+        <div>
+            @if (!data.isNew) {
+            <p-button label="Löschen" severity="danger" (onClick)="onDelete()" />
+            }
+        </div>
+        <p-button [disabled]="isDisabled()" label="Speichern" severity="primary" (onClick)="onSave()" />
+        <!-- <p-button label="Abbrechen" severity="secondary" [outlined]="true" (onClick)="onCancel()" /> -->
     </div>
 </div>

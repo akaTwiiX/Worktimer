@@ -1,9 +1,12 @@
 <div class="container">
     <div class="header">
-        <button color="accent" mat-button (click)="settings()">
-            <mat-icon>settings</mat-icon>
-            Einstellungen
-        </button>
+        <p-button 
+            label="Einstellungen" 
+            icon="pi pi-cog" 
+            severity="secondary" 
+            [outlined]="true"
+            (onClick)="settings()" 
+        />
     </div>
     <full-calendar #calendar 
         [options]="calendarOptions" 

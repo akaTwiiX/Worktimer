@@ -26,10 +26,15 @@
 }
 
 .add-color-button {
-    height: 56px;
-    border-radius: 12px;
-    border-style: dashed !important;
-    color: var(--text-secondary) !important;
+    ::ng-deep {
+        .p-button {
+            height: 46px;
+            width: 285px;
+            border-radius: 12px;
+            border-style: dashed !important;
+            color: var(--text-secondary) !important;
+        }
+    }
 }
 
 .actions {
@@ -55,6 +60,14 @@
     z-index: 10;
     left: 16px;
     right: 16px;
+
+    ::ng-deep {
+        .p-button {
+            height: 46px;
+            width: 100%;
+            justify-content: center;
+        }
+    }
 }
 
 .save-button-hidden {
@@ -72,4 +85,20 @@
     font-weight: bold;
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
     border: 1px solid var(--border-color);
+}
+
+.margin-bottom-6rem {
+    margin-bottom: 6rem;
+}
+
+::ng-deep {
+    .p-toast {
+        width: 100% !important;
+        max-width: 400px;
+        padding: 0 16px;
+
+        .p-toast-message {
+            width: 100%;
+        }
+    }
 }

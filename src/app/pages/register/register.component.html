@@ -1,59 +1,90 @@
 <div class="register">
     @if (isLoading) {
-    <mat-spinner></mat-spinner>
+    <p-progressspinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="transparent" animationDuration=".5s" />
     } @else {
     <form class="register-form">
         <div>
             <h2>Registrieren</h2>
         </div>
 
-        <mat-form-field appearance="outline">
-            <mat-label>Email</mat-label>
-            <input matInput type="email" [formControl]="emailFormControl" placeholder="beispiel@email.de">
+        <div class="full-width">
+            <p-floatlabel class="full-width" variant="on">
+                <input 
+                    class="full-width" 
+                    pInputText 
+                    id="email" 
+                    type="email" 
+                    [formControl]="emailFormControl" 
+                    autocomplete="email"
+                    [invalid]="emailFormControl.invalid && emailFormControl.touched"  
+                />
+                <label for="email">Email</label>
+            </p-floatlabel>
             @if (emailFormControl.hasError('email') && !emailFormControl.hasError('required')) {
-            <mat-error>Bitte geben Sie eine gültige E-Mail-Adresse ein</mat-error>
+            <p-message severity="error" size="small" variant="simple">Bitte geben Sie eine gültige E-Mail-Adresse ein</p-message>
             }
-            @if (emailFormControl.hasError('required')) {
-            <mat-error>E-Mail ist erforderlich</mat-error>
+            @if (emailFormControl.hasError('required') && emailFormControl.touched) {
+            <p-message severity="error" size="small" variant="simple">E-Mail ist erforderlich</p-message>
             }
-        </mat-form-field>
+        </div>
 
-        <mat-form-field appearance="outline">
-            <mat-label>Passwort</mat-label>
-            <input matInput type="password" [formControl]="passwordFormControl" placeholder="Mindestens 8 Zeichen">
+        <div>
+            <p-floatlabel class=" mt-4" variant="on">
+                <input 
+                    class="full-width" 
+                    pInputText 
+                    id="password" 
+                    type="password" 
+                    [formControl]="passwordFormControl" 
+                    autocomplete="new-password"
+                    [invalid]="passwordFormControl.invalid && passwordFormControl.touched"  
+                />
+                <label for="password">Passwort</label>
+            </p-floatlabel>
             @if (passwordFormControl.hasError('minlength')) {
-            <mat-error>Passwort muss mindestens 8 Zeichen lang sein</mat-error>
+            <p-message severity="error" size="small" variant="simple">Passwort muss mindestens 8 Zeichen lang sein</p-message>
             }
-            @if (passwordFormControl.hasError('required')) {
-            <mat-error>Passwort ist erforderlich</mat-error>
+            @if (passwordFormControl.hasError('required') && passwordFormControl.touched) {
+            <p-message severity="error" size="small" variant="simple">Passwort ist erforderlich</p-message>
             }
-        </mat-form-field>
+        </div>
 
-        <mat-form-field appearance="outline">
-            <mat-label>Passwort wiederholen</mat-label>
-            <input matInput type="password" [formControl]="passwordConfirmFormControl" placeholder="Passwort bestätigen">
+        <div>
+            <p-floatlabel class=" mt-4" variant="on">
+                <input 
+                    class="full-width" 
+                    pInputText 
+                    id="password-confirm" 
+                    type="password" 
+                    [formControl]="passwordConfirmFormControl" 
+                    autocomplete="new-password"
+                    [invalid]="passwordConfirmFormControl.invalid && passwordConfirmFormControl.touched"  
+                />
+                <label for="password-confirm">Passwort wiederholen</label>
+            </p-floatlabel>
             @if (passwordConfirmFormControl.hasError('minlength')) {
-            <mat-error>Passwort muss mindestens 8 Zeichen lang sein</mat-error>
+            <p-message severity="error" size="small" variant="simple">Passwort muss mindestens 8 Zeichen lang sein</p-message>
             }
-            @if (passwordConfirmFormControl.hasError('required')) {
-            <mat-error>Passwort-Bestätigung ist erforderlich</mat-error>
+            @if (passwordConfirmFormControl.hasError('required') && passwordConfirmFormControl.touched) {
+            <p-message severity="error" size="small" variant="simple">Passwort-Bestätigung ist erforderlich</p-message>
             }
-        </mat-form-field>
+        </div>
 
         @if (errorMessage) {
-        <div class="message error">{{errorMessage}}</div>
+        <p-message severity="error" size="small" variant="simple">{{errorMessage}}</p-message>
         }
         
         @if (successMessage) {
-        <div class="message success">{{successMessage}}</div>
+        <p-message severity="success" size="small" variant="simple">{{successMessage}}</p-message>
         }
 
         <div class="btn-container">
-            <button mat-raised-button color="primary"
-                    [disabled]="!emailFormControl.valid || !passwordFormControl.valid || !passwordConfirmFormControl.valid"
-                    (click)="register()">
-                Registrieren
-            </button>
+            <p-button 
+                label="Registrieren" 
+                severity="primary" 
+                [disabled]="!emailFormControl.valid || !passwordFormControl.valid || !passwordConfirmFormControl.valid"
+                (onClick)="register()" 
+            />
         </div>
 
         <div class="link-container">

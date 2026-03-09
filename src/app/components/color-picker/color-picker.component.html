@@ -1,8 +1,7 @@
 <div class="color-picker-container" [class.disabled]="disabled()" [style.--current-color]="color()">
-    <mat-form-field appearance="outline" class="color-picker-field">
-        <mat-label (click)="openEditDialog()">{{ label() + (isActive() ? ' (Aktiv)' : ' (Inaktiv)') }}</mat-label>
-        
-        <div matPrefix class="preview-container">
+    <p-inputgroup>
+        <p-inputgroup-addon>
+        <div class="preview-container">
             <div class="color-preview" [style.background-color]="color()"></div>
             <input 
                 type="color" 
@@ -12,18 +11,31 @@
                 class="hidden-color-input"
             >
         </div>
-
+    </p-inputgroup-addon>
+    <p-floatlabel class="color-picker-field" variant="on">
         <input 
-            matInput 
+            pInputText 
+            id="color-input"
             [value]="color()" 
             (input)="onTextChange($event)"
             [disabled]="disabled()"
             placeholder="#000000"
             maxlength="7"
-        >
+        />
+        <label for="color-input" (click)="openEditDialog()">{{ label() + (isActive() ? ' (Aktiv)' : ' (Inaktiv)') }}</label>
+        
 
-        <button matSuffix mat-icon-button type="button" (click)="delete.emit()" [disabled]="disabled()" class="delete-btn">
-            <mat-icon>delete</mat-icon>
-        </button>
-    </mat-form-field>
+        </p-floatlabel>
+        <p-inputgroup-addon>
+            <p-button 
+                icon="pi pi-trash" 
+                [text]="true" 
+                [rounded]="true" 
+                severity="danger"
+                (onClick)="delete.emit()" 
+                [disabled]="disabled()" 
+                class="delete-btn" 
+            />
+        </p-inputgroup-addon>
+    </p-inputgroup>
 </div>

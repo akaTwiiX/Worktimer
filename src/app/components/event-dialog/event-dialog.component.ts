@@ -1,19 +1,26 @@
 import { Component, Inject, inject, computed } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { FloatLabelModule } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { ButtonModule } from 'primeng/button';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { ThemeColors } from '../../color.themes';
 import { SettingsService } from '../../settings.service';
 import { TimeFormatDirective } from '../../directives/time-format.directive';
 
 @Component({
   selector: 'app-event-dialog',
-  imports: [MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule, MatRadioModule, MatSelectModule, MatSlideToggleModule, TimeFormatDirective],
+  imports: [
+    InputTextModule,
+    FloatLabelModule,
+    FormsModule,
+    ButtonModule,
+    RadioButtonModule,
+    ToggleSwitchModule,
+    TimeFormatDirective
+  ],
   templateUrl: './event-dialog.component.html',
   styleUrl: './event-dialog.component.scss'
 })
@@ -52,12 +59,15 @@ export class EventDialogComponent {
   });
 
   isVisible = false;
-
   selectedTime: string = '';
 
-  constructor(public dialogRef: MatDialogRef<EventDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+  data: any;
+
+  constructor(
+    public dialogRef: DynamicDialogRef,
+    public config: DynamicDialogConfig
   ) {
+    this.data = config.data;
     if (!this.data.isNew) {
       const textData = this.data.title.split('<small>Kasse:</small>');
       this.eventData.title = textData[0].trim();
@@ -69,7 +79,6 @@ export class EventDialogComponent {
     } else {
       this.selectedTime = '9-17';
     }
-
   }
 
   onCancel(): void {
@@ -84,13 +93,11 @@ export class EventDialogComponent {
     this.selectedTime = time;
   }
 
-  toggleVisibility(event: MatSlideToggleChange) {
-    this.isVisible = event.checked;
+  toggleVisibility(checked: boolean) {
+    this.isVisible = checked;
   }
 
   onSave(): void {
-    if (this.isVisible && (this.eventData.title.trim().length === 0 && this.eventData.backgroundColor === 0)) return;
-
     this.dialogRef.close({
       title: this.setTitle(),
       backgroundColor: this.eventData.backgroundColor
@@ -107,4 +114,7 @@ export class EventDialogComponent {
     }
   }
 
+  isDisabled(): boolean {
+    return this.isVisible && (this.eventData.title.trim().length === 0);
+  }
 }
