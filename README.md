@@ -1,15 +1,26 @@
 # Worktimer
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.2.
+Worktimer is a modern web app for tracking and managing working hours. It provides a simple overview of all hours worked and breaks taken via an interactive calendar.
 
-## Required
+## Features
 
-- NodeJS 20
+- **Time Tracking**: Record your working hours on specific days using an interactive monthly calendar (add, edit, delete).
+- **Automatic Calculation**: Total working time and total breaks per month are calculated automatically and efficiently in the background.
+- **Categories & Colors**: Personalize your entries with custom colors and labels (e.g., for illness, vacation, home office).
+- **Cloud Synchronization**: With Firebase integration (Authentication & Firestore), your data is secure and synchronized in real-time across multiple devices.
+- **Responsive & Mobile-ready**: The app supports touch gestures (e.g., swiping to change months) and adapts to your device.
+- **Theme Support**: Ability to use different color schemes and themes.
+
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.15.
+
+## Prerequisites
+
+- NodeJS 22
 - [pnpm](https://pnpm.io/installation#using-other-package-managers)
 
-## Environment file
+## Setup Environment
 
-1. Create the env file:
+1. Create the local development environment file:
 
     ```bash
     cd ./src/environments
@@ -17,58 +28,40 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
     cd ../..
     ```
 
-## Development server
+2. Make sure you install the dependencies:
 
-To start a local development server, run:
+    ```bash
+    pnpm install
+    ```
 
-```bash
-ng serve
-```
+## Available Scripts
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+In the project directory, you can run the following commands (using `pnpm` as required):
 
-## Code scaffolding
+### `pnpm start`
+Starts the local development server.
+Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### `pnpm run watch`
+Builds the project in development mode and watches for file changes.
 
-```bash
-ng generate component component-name
-```
+### `pnpm build`
+Builds the project for development. The build artifacts will be stored in the `dist/` directory.
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### `pnpm run build:prod`
+Builds the application for production to the `dist/` directory. 
+This script also runs prebuild and postbuild steps automatically:
+- **Prebuild**: Configures the environment running `node ./scripts/set-env.js`.
+- **Build**: Compiles with production configuration and base href for `/Worktimer/`.
+- **Postbuild**: Generates a 404 page running `node ./scripts/generate-404.js`.
 
-```bash
-ng generate --help
-```
+### `pnpm test`
+Executes the unit tests via [Karma](https://karma-runner.github.io).
 
-## Building
+## Code Scaffolding
 
-To build the project run:
+Run `pnpm ng generate component component-name` to generate a new component. You can also use `pnpm ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-```bash
-ng build
-```
+## Further Help
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+To get more help on the Angular CLI use `pnpm ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
