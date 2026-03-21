@@ -35,6 +35,12 @@ full-calendar {
     height: 90%;
 }
 
+:host ::ng-deep .fc-daygrid-week-number {
+    font-size: 0.65rem;
+    opacity: 0.6;
+    padding: 2px 4px;
+}
+
 @media (max-width: 600px) {
     .header {
         justify-content: start;

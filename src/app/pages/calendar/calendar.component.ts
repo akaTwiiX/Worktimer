@@ -47,6 +47,8 @@ export class CalendarComponent implements OnDestroy {
     longPressDelay: 500,
     eventLongPressDelay: 500,
     weekNumbers: true,
+    weekNumberFormat: { week: 'numeric' },
+    weekNumberContent: arg => ({ html: `KW${arg.num}` }),
     firstDay: 1,
     slotLabelFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
     eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
