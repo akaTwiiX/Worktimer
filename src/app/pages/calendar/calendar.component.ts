@@ -46,6 +46,7 @@ export class CalendarComponent implements OnDestroy {
     unselectAuto: true,
     longPressDelay: 500,
     eventLongPressDelay: 500,
+    weekNumbers: true,
     firstDay: 1,
     slotLabelFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
     eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
