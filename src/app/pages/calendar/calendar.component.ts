@@ -76,7 +76,7 @@ export class CalendarComponent implements OnDestroy {
 
   constructor() {
     effect(() => {
-      const colors = this.settingsService.settings().themeColors;
+      const colors = this.settingsService.settingsValue.themeColors;
       if (this.lastSnapshotDocs) {
         this.runWorker(this.lastSnapshotDocs, colors);
       }
@@ -159,7 +159,7 @@ export class CalendarComponent implements OnDestroy {
       q,
       (snapshot) => {
         this.lastSnapshotDocs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-        this.runWorker(this.lastSnapshotDocs, this.settingsService.settings().themeColors);
+        this.runWorker(this.lastSnapshotDocs, this.settingsService.settingsValue.themeColors);
       },
       (error) => {
         console.error('Error loading events:', error);

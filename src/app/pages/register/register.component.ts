@@ -8,6 +8,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { auth } from '../../firebase-config';
+import { SettingsService } from '../../settings.service';
 
 @Component({
   selector: 'app-register',
@@ -32,6 +33,7 @@ export class RegisterComponent {
   successMessage = '';
   isLoading = false;
   private router = inject(Router);
+  private settingsService = inject(SettingsService);
 
   async register() {
     if (!this.emailFormControl.value || !this.passwordFormControl.value || !this.passwordConfirmFormControl.value) {
@@ -54,6 +56,8 @@ export class RegisterComponent {
 
       await sendEmailVerification(user);
       console.log('Verification email sent');
+
+      await this.settingsService.setDefaultSettings(user);
 
       this.successMessage = 'Registrierung erfolgreich! Bitte überprüfen Sie Ihre E-Mails zur Verifizierung.';
 

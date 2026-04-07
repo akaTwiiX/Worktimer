@@ -34,7 +34,7 @@ export class EventDialogComponent {
   eventData = { title: '', backgroundColor: 0, selection: 0 };
 
   get colors(): ThemeColors[] {
-    return this.settingsService.settings().themeColors;
+    return this.settingsService.settingsValue.themeColors;
   }
 
   sortedColors = computed(() => {

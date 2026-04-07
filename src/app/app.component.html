@@ -1,1 +1,7 @@
+@if (settingsService.isLoading()) {
+<div class="loading-overlay">
+    <p-progressSpinner />
+</div>
+} @else {
 <router-outlet />
+}

@@ -39,7 +39,7 @@ export class SettingsComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      const settings = this.settingsService.settings();
+      const settings = this.settingsService.settingsValue;
       if (settings) {
         if (!this.hasChanges()) {
           this.themeColors.set(JSON.parse(JSON.stringify(settings.themeColors)));

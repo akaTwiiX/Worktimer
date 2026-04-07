@@ -1,7 +1,7 @@
 import type { User } from 'firebase/auth';
 import type { Unsubscribe } from 'firebase/firestore';
 import type { ThemeColors } from './color.themes';
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { Colors } from './color.themes';
@@ -15,30 +15,44 @@ export interface UserSettings {
   providedIn: 'root',
 })
 export class SettingsService {
-  private _settings = signal<UserSettings>({ themeColors: Colors });
+  private _settings = signal<UserSettings | null>(null);
+  private _isAuthenticated = signal(false);
+
   public readonly settings = this._settings.asReadonly();
+  public readonly isAuthenticated = this._isAuthenticated.asReadonly();
+  public readonly isLoading = computed(
+    () => this._isAuthenticated() && this._settings() === null,
+  );
+
+  public get settingsValue(): UserSettings {
+    const s = this._settings();
+    if (!s)
+      throw new Error('Settings not loaded yet');
+    return s;
+  }
 
   private unsubscribe: Unsubscribe | null = null;
 
   constructor() {
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        this._isAuthenticated.set(true);
         this.startSync(user);
       } else {
+        this._isAuthenticated.set(false);
         this.stopSync();
+        this._settings.set(null);
       }
     });
   }
 
   private startSync(user: User) {
     this.stopSync();
+    this._settings.set(null);
     const settingsDoc = doc(db, 'settings', user.uid);
     this.unsubscribe = onSnapshot(settingsDoc, (snapshot) => {
       if (snapshot.exists()) {
         this._settings.set(snapshot.data() as UserSettings);
-      } else {
-        // Initialize with defaults if no settings exist
-        this.saveSettings({ themeColors: Colors });
       }
     }, (error) => {
       console.error('Error syncing settings:', error);
@@ -61,6 +75,19 @@ export class SettingsService {
       await setDoc(doc(db, 'settings', user.uid), settings, { merge: true });
     } catch (error) {
       console.error('Error saving settings:', error);
+      throw error;
+    }
+  }
+
+  async setDefaultSettings(user?: User) {
+    const target = user ?? auth.currentUser;
+    if (!target)
+      return;
+
+    try {
+      await setDoc(doc(db, 'settings', target.uid), { themeColors: Colors, created: new Date() });
+    } catch (error) {
+      console.error('Error setting default settings:', error);
       throw error;
     }
   }
