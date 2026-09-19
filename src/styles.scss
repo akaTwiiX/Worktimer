@@ -3,92 +3,97 @@
 /* CSS Variables for Light Theme (default) */
 :root,
 .light {
-    --bg-primary: #ffffff;
-    --bg-secondary: #f5f5f5;
-    --text-primary: #333333;
-    --text-secondary: #666666;
-    --border-color: #e0e0e0;
-    --calendar-bg: #ffffff;
-    --calendar-today: #e0e0e0;
-    --calendar-text: #000000;
-    --gradient-start: #667eea;
-    --gradient-end: #764ba2;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --border-color: #e0e0e0;
+  --calendar-bg: #ffffff;
+  --calendar-today: #e0e0e0;
+  --calendar-text: #000000;
+  --gradient-start: #667eea;
+  --gradient-end: #764ba2;
 }
 
 /* CSS Variables for Dark Theme */
 .dark {
-    --bg-primary: #1e1e1e;
-    --bg-secondary: #2d2d2d;
-    --text-primary: #e0e0e0;
-    --text-secondary: #b0b0b0;
-    --border-color: #404040;
-    --calendar-bg: #2d2d2d;
-    --calendar-today: #404040;
-    --calendar-text: #e0e0e0;
-    --gradient-start: #4a5568;
-    --gradient-end: #2d3748;
+  --bg-primary: #1e1e1e;
+  --bg-secondary: #2d2d2d;
+  --text-primary: #e0e0e0;
+  --text-secondary: #b0b0b0;
+  --border-color: #404040;
+  --calendar-bg: #2d2d2d;
+  --calendar-today: #404040;
+  --calendar-text: #e0e0e0;
+  --gradient-start: #4a5568;
+  --gradient-end: #2d3748;
 }
 
 html,
 body {
-    height: 100%;
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    transition: background-color 0.3s ease, color 0.3s ease;
+  height: 100%;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 body {
-    margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
 /* FullCalendar Theming */
 .fc {
-    background-color: var(--calendar-bg);
-    color: var(--calendar-text);
+  background-color: var(--calendar-bg);
+  color: var(--calendar-text);
 }
 
 .fc .fc-daygrid-day-number {
-    color: var(--calendar-text);
+  color: var(--calendar-text);
 }
 
 .fc-event-title {
-    width: 100%;
-    text-align: center;
-    font-size: 14px;
-    white-space: pre-wrap;
-    color: var(--calendar-text);
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+  white-space: pre-wrap;
+  color: var(--calendar-text);
 }
 
 .fc-col-header-cell-cushion {
-    color: var(--calendar-text);
+  color: var(--calendar-text);
 }
 
 .fc-day-today {
-    background-color: var(--calendar-today) !important;
+  background-color: var(--calendar-today) !important;
 }
 
 .fc-event-main {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
-    font-size: 14px;
-    white-space: pre-wrap;
-    word-break: break-word;
-    max-width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  font-size: 14px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-width: 100%;
 
-    small {
-        font-size: 10px;
-    }
+  small {
+    font-size: 10px;
+  }
 }
 
 .full-width {
-    width: 100%;
-    display: block;
+  width: 100%;
+  display: block;
 }
 
 /* Theme smooth transitions */
 * {
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
 }

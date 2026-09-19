@@ -1,7 +1,7 @@
-import type { ThemeMode } from '../../theme.service';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import type { ThemeMode } from '../../theme.service';
 import { ThemeService } from '../../theme.service';
 
 @Component({

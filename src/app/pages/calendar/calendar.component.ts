@@ -1,13 +1,28 @@
 import type { OnDestroy } from '@angular/core';
-import type { FullCalendarComponent } from '@fullcalendar/angular';
-import type { CalendarOptions, EventInput } from '@fullcalendar/core';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, inject, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  effect,
+  inject,
+  ViewChild,
+} from '@angular/core';
 import { Router } from '@angular/router';
-import { FullCalendarModule } from '@fullcalendar/angular';
+import { FullCalendarComponent, FullCalendarModule } from '@fullcalendar/angular';
+import type { CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import { addDoc, collection, deleteDoc, doc, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
 import { ButtonModule } from 'primeng/button';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { EventDialogComponent } from '../../components/event-dialog/event-dialog.component';
@@ -53,7 +68,7 @@ export class CalendarComponent implements OnDestroy {
     slotLabelFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
     eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
     datesSet: this.handleDatesSet.bind(this),
-    eventContent: (arg) => {
+    eventContent: arg => {
       return { html: arg.event.title };
     },
   };
@@ -145,8 +160,7 @@ export class CalendarComponent implements OnDestroy {
       this.unsubscribe();
     }
     const user = auth.currentUser;
-    if (!user)
-      return;
+    if (!user) return;
 
     const eventsCollection = collection(db, user.uid);
     const q = query(
@@ -157,11 +171,11 @@ export class CalendarComponent implements OnDestroy {
 
     this.unsubscribe = onSnapshot(
       q,
-      (snapshot) => {
+      snapshot => {
         this.lastSnapshotDocs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
         this.runWorker(this.lastSnapshotDocs, this.settingsService.settingsValue.themeColors);
       },
-      (error) => {
+      error => {
         console.error('Error loading events:', error);
       },
     );
@@ -169,7 +183,7 @@ export class CalendarComponent implements OnDestroy {
 
   async handleDateClick(info: any) {
     const clickedDate = info.dateStr.split('T')[0];
-    const eventForDay = this.originalEvents.find((e) => {
+    const eventForDay = this.originalEvents.find(e => {
       const eventDate = (e.start as string).split('T')[0];
       return eventDate === clickedDate;
     });
@@ -183,9 +197,8 @@ export class CalendarComponent implements OnDestroy {
         dismissableMask: true,
       });
 
-      ref?.onClose.subscribe(async (result) => {
-        if (!result)
-          return;
+      ref?.onClose.subscribe(async result => {
+        if (!result) return;
 
         const newEvent = {
           title: result.title,
@@ -214,15 +227,14 @@ export class CalendarComponent implements OnDestroy {
         isNew: false,
         id: eventForDay.id,
         title: eventForDay.title,
-        colorId: (eventForDay.extendedProps as { colorId?: string, })?.colorId,
+        colorId: (eventForDay.extendedProps as { colorId?: string })?.colorId,
       },
       closable: true,
       dismissableMask: true,
     });
 
-    ref?.onClose.subscribe(async (result) => {
-      if (!result)
-        return;
+    ref?.onClose.subscribe(async result => {
+      if (!result) return;
 
       const eventDoc = doc(db, auth.currentUser!.uid, eventForDay.id!);
 

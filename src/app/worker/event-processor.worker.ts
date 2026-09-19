@@ -13,8 +13,8 @@ addEventListener('message', ({ data }) => {
     const color = colors.find((c: any) => c.id === colorId)?.value || '#FFFFFF';
     const eventStart = new Date(docData.start);
 
-    const isStartInMonth
-      = eventStart >= new Date(currentMonthStart) && eventStart <= new Date(currentMonthEnd);
+    const isStartInMonth =
+      eventStart >= new Date(currentMonthStart) && eventStart <= new Date(currentMonthEnd);
 
     if (isStartInMonth) {
       const title = docData.title;
@@ -57,9 +57,7 @@ addEventListener('message', ({ data }) => {
   });
 
   const sortedEvents = events.sort(
-    (a, b) =>
-      new Date(a.start as string).getTime()
-        - new Date(b.start as string).getTime(),
+    (a, b) => new Date(a.start as string).getTime() - new Date(b.start as string).getTime(),
   );
 
   const mergedEvents = mergeEvents(sortedEvents);
@@ -73,15 +71,14 @@ addEventListener('message', ({ data }) => {
 });
 
 function mergeEvents(events: EventInput[]): EventInput[] {
-  if (!events.length)
-    return [];
+  if (!events.length) return [];
 
   const merged: EventInput[] = [];
   let blockStart = events[0].start as string;
   let blockEnd = events[0].start as string;
   let currentTitle = events[0].title;
   let currentColor = events[0].backgroundColor;
-  let currentColorId = (events[0].extendedProps as { colorId?: string, })?.colorId;
+  let currentColorId = (events[0].extendedProps as { colorId?: string })?.colorId;
 
   function pushBlock() {
     const endDate = new Date(blockEnd);
@@ -106,7 +103,11 @@ function mergeEvents(events: EventInput[]): EventInput[] {
     const next = new Date(events[i].start as string);
     const diff = (next.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24);
 
-    if (events[i].title === currentTitle && (events[i].extendedProps as { colorId?: string, })?.colorId === currentColorId && diff === 1) {
+    if (
+      events[i].title === currentTitle &&
+      (events[i].extendedProps as { colorId?: string })?.colorId === currentColorId &&
+      diff === 1
+    ) {
       blockEnd = events[i].start as string;
     } else {
       pushBlock();
@@ -114,7 +115,7 @@ function mergeEvents(events: EventInput[]): EventInput[] {
       blockEnd = events[i].start as string;
       currentTitle = events[i].title;
       currentColor = events[i].backgroundColor as string;
-      currentColorId = (events[i].extendedProps as { colorId?: string, })?.colorId;
+      currentColorId = (events[i].extendedProps as { colorId?: string })?.colorId;
     }
   }
 

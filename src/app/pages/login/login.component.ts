@@ -6,7 +6,6 @@ import { ButtonModule } from 'primeng/button';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { auth } from '../../firebase-config';
 
 @Component({
@@ -15,7 +14,6 @@ import { auth } from '../../firebase-config';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    ProgressSpinnerModule,
     InputTextModule,
     FloatLabelModule,
     ButtonModule,
@@ -30,14 +28,12 @@ export class LoginComponent {
   errorMessage = '';
   emailNotVerified = false;
   verificationEmailSent = false;
-  isLoading = true;
   private router = inject(Router);
 
   constructor() {
-    auth.onAuthStateChanged((user) => {
-      this.isLoading = false;
+    auth.onAuthStateChanged(user => {
       if (user && user.emailVerified) {
-        this.router.navigate(['/']);
+        this.router.navigate(['/home']);
       }
     });
   }
@@ -47,11 +43,14 @@ export class LoginComponent {
       return;
     }
     try {
-      this.isLoading = true;
       this.errorMessage = '';
       this.emailNotVerified = false;
 
-      const userCredential = await signInWithEmailAndPassword(auth, this.emailFormControl.value, this.passwordFormControl.value);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        this.emailFormControl.value,
+        this.passwordFormControl.value,
+      );
       const user = userCredential.user;
       console.log('Successfully logged in:', user);
 
@@ -61,7 +60,7 @@ export class LoginComponent {
         return;
       }
 
-      this.router.navigate(['/']);
+      this.router.navigate(['/home']);
     } catch (error: any) {
       console.error('Login error:', error);
 
@@ -76,7 +75,8 @@ export class LoginComponent {
           this.errorMessage = 'Ungültige Anmeldedaten. Bitte überprüfen Sie E-Mail und Passwort.';
           break;
         case 'auth/too-many-requests':
-          this.errorMessage = 'Zu viele fehlgeschlagene Anmeldeversuche. Bitte versuchen Sie es später erneut.';
+          this.errorMessage =
+            'Zu viele fehlgeschlagene Anmeldeversuche. Bitte versuchen Sie es später erneut.';
           break;
         case 'auth/network-request-failed':
           this.errorMessage = 'Netzwerkfehler. Bitte überprüfen Sie Ihre Internetverbindung.';
@@ -84,8 +84,6 @@ export class LoginComponent {
         default:
           this.errorMessage = `Ein Fehler ist aufgetreten: ${error.message}`;
       }
-    } finally {
-      this.isLoading = false;
     }
   }
 

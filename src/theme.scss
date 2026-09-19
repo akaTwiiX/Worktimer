@@ -4,111 +4,111 @@
 /* ─── Light Theme (default) ─────────────────────────────── */
 :root,
 .light {
-    /* Primary */
-    --p-primary-50: #f3edff;
-    --p-primary-100: #e7dcff;
-    --p-primary-200: #d3bbff;
-    --p-primary-300: #b899f0;
-    --p-primary-400: #9a73d4;
-    --p-primary-500: #6d4aaf;
-    --p-primary-600: #553095;
-    --p-primary-700: #3e137e;
-    --p-primary-800: #260059;
-    --p-primary-900: #14003a;
+  /* Primary */
+  --p-primary-50: #f3edff;
+  --p-primary-100: #e7dcff;
+  --p-primary-200: #d3bbff;
+  --p-primary-300: #b899f0;
+  --p-primary-400: #9a73d4;
+  --p-primary-500: #6d4aaf;
+  --p-primary-600: #553095;
+  --p-primary-700: #3e137e;
+  --p-primary-800: #260059;
+  --p-primary-900: #14003a;
 
-    --p-primary-color: #6d4aaf;
-    --p-primary-contrast-color: #ffffff;
-    --p-primary-hover-color: #553095;
-    --p-primary-active-color: #3e137e;
+  --p-primary-color: #6d4aaf;
+  --p-primary-contrast-color: #ffffff;
+  --p-primary-hover-color: #553095;
+  --p-primary-active-color: #3e137e;
 
-    /* Surfaces (mapped from M3 surface tokens) */
-    --p-surface-0: #ffffff;
-    --p-surface-50: #f7f2f3;
-    --p-surface-100: #f1eded;
-    --p-surface-200: #ebe7e7;
-    --p-surface-300: #e6e1e2;
-    --p-surface-400: #ddd9d9;
-    --p-surface-500: #cac5cb;
-    --p-surface-600: #7a767b;
-    --p-surface-700: #49454b;
-    --p-surface-800: #322f35;
-    --p-surface-900: #1c1b1c;
-    --p-surface-950: #141314;
+  /* Surfaces (mapped from M3 surface tokens) */
+  --p-surface-0: #ffffff;
+  --p-surface-50: #f7f2f3;
+  --p-surface-100: #f1eded;
+  --p-surface-200: #ebe7e7;
+  --p-surface-300: #e6e1e2;
+  --p-surface-400: #ddd9d9;
+  --p-surface-500: #cac5cb;
+  --p-surface-600: #7a767b;
+  --p-surface-700: #49454b;
+  --p-surface-800: #322f35;
+  --p-surface-900: #1c1b1c;
+  --p-surface-950: #141314;
 
-    /* Text */
-    --p-text-color: #1c1b1c;
-    --p-text-muted-color: #49454b;
-    --p-text-hover-color: #1c1b1c;
+  /* Text */
+  --p-text-color: #1c1b1c;
+  --p-text-muted-color: #49454b;
+  --p-text-hover-color: #1c1b1c;
 
-    /* Content / Card backgrounds */
-    --p-content-background: #fdf8f8;
-    --p-content-hover-background: #f1eded;
-    --p-content-border-color: #cac5cb;
+  /* Content / Card backgrounds */
+  --p-content-background: #fdf8f8;
+  --p-content-hover-background: #f1eded;
+  --p-content-border-color: #cac5cb;
 
-    /* Mask / overlay */
-    --p-mask-background: rgba(0, 0, 0, .32);
+  /* Mask / overlay */
+  --p-mask-background: rgba(0, 0, 0, 0.32);
 
-    /* Error */
-    --p-form-field-invalid-border-color: #ba1a1a;
-    --p-form-field-invalid-placeholder-color: #ba1a1a;
+  /* Error */
+  --p-form-field-invalid-border-color: #ba1a1a;
+  --p-form-field-invalid-placeholder-color: #ba1a1a;
 
-    /* Focus ring – purple */
-    --p-focus-ring-color: #6d4aaf;
-    --p-focus-ring-width: 2px;
-    --p-focus-ring-style: solid;
-    --p-focus-ring-offset: 2px;
+  /* Focus ring – purple */
+  --p-focus-ring-color: #6d4aaf;
+  --p-focus-ring-width: 2px;
+  --p-focus-ring-style: solid;
+  --p-focus-ring-offset: 2px;
 }
 
 /* ─── Dark Theme ─────────────────────────────────────────── */
 .dark {
-    /* Primary */
-    --p-primary-50: #14003a;
-    --p-primary-100: #260059;
-    --p-primary-200: #3e137e;
-    --p-primary-300: #553095;
-    --p-primary-400: #6d4aaf;
-    --p-primary-500: #d3bbff;
-    --p-primary-600: #e7dcff;
-    --p-primary-700: #f0e9ff;
-    --p-primary-800: #f8f4ff;
-    --p-primary-900: #fbf8ff;
+  /* Primary */
+  --p-primary-50: #14003a;
+  --p-primary-100: #260059;
+  --p-primary-200: #3e137e;
+  --p-primary-300: #553095;
+  --p-primary-400: #6d4aaf;
+  --p-primary-500: #d3bbff;
+  --p-primary-600: #e7dcff;
+  --p-primary-700: #f0e9ff;
+  --p-primary-800: #f8f4ff;
+  --p-primary-900: #fbf8ff;
 
-    --p-primary-color: #d3bbff;
-    --p-primary-contrast-color: #3e137e;
-    --p-primary-hover-color: #ebdcff;
-    --p-primary-active-color: #f3edff;
+  --p-primary-color: #d3bbff;
+  --p-primary-contrast-color: #3e137e;
+  --p-primary-hover-color: #ebdcff;
+  --p-primary-active-color: #f3edff;
 
-    /* Surfaces */
-    --p-surface-0: #0f0e0e;
-    --p-surface-50: #141314;
-    --p-surface-100: #1c1b1c;
-    --p-surface-200: #201f20;
-    --p-surface-300: #2b2a2a;
-    --p-surface-400: #363435;
-    --p-surface-500: #3a3939;
-    --p-surface-600: #49454b;
-    --p-surface-700: #948f95;
-    --p-surface-800: #cac5cb;
-    --p-surface-900: #e6e1e2;
-    --p-surface-950: #fdf8f8;
+  /* Surfaces */
+  --p-surface-0: #0f0e0e;
+  --p-surface-50: #141314;
+  --p-surface-100: #1c1b1c;
+  --p-surface-200: #201f20;
+  --p-surface-300: #2b2a2a;
+  --p-surface-400: #363435;
+  --p-surface-500: #3a3939;
+  --p-surface-600: #49454b;
+  --p-surface-700: #948f95;
+  --p-surface-800: #cac5cb;
+  --p-surface-900: #e6e1e2;
+  --p-surface-950: #fdf8f8;
 
-    /* Text */
-    --p-text-color: #e6e1e2;
-    --p-text-muted-color: #cac5cb;
-    --p-text-hover-color: #e6e1e2;
+  /* Text */
+  --p-text-color: #e6e1e2;
+  --p-text-muted-color: #cac5cb;
+  --p-text-hover-color: #e6e1e2;
 
-    /* Content */
-    --p-content-background: #1c1b1c;
-    --p-content-hover-background: #2b2a2a;
-    --p-content-border-color: #49454b;
+  /* Content */
+  --p-content-background: #1c1b1c;
+  --p-content-hover-background: #2b2a2a;
+  --p-content-border-color: #49454b;
 
-    /* Mask */
-    --p-mask-background: rgba(0, 0, 0, .60);
+  /* Mask */
+  --p-mask-background: rgba(0, 0, 0, 0.6);
 
-    /* Error */
-    --p-form-field-invalid-border-color: #ffb4ab;
-    --p-form-field-invalid-placeholder-color: #ffb4ab;
+  /* Error */
+  --p-form-field-invalid-border-color: #ffb4ab;
+  --p-form-field-invalid-placeholder-color: #ffb4ab;
 
-    /* Focus ring */
-    --p-focus-ring-color: #d3bbff;
+  /* Focus ring */
+  --p-focus-ring-color: #d3bbff;
 }

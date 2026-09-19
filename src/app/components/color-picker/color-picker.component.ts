@@ -12,7 +12,14 @@ const COLOR_HEX_REGEX = /^#(?:[0-9A-F]{3}|[0-9A-F]{6})$/i;
 @Component({
   selector: 'app-color-picker',
   standalone: true,
-  imports: [InputTextModule, FloatLabelModule, DynamicDialogModule, ButtonModule, InputGroupModule, InputGroupAddonModule],
+  imports: [
+    InputTextModule,
+    FloatLabelModule,
+    DynamicDialogModule,
+    ButtonModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+  ],
   providers: [DialogService],
   templateUrl: './color-picker.component.html',
   styleUrl: './color-picker.component.scss',
@@ -42,7 +49,7 @@ export class ColorPickerComponent {
       data: { label: this.label(), isActive: this.isActive() },
     });
 
-    ref?.onClose.subscribe((result) => {
+    ref?.onClose.subscribe(result => {
       if (result) {
         this.label.set(result.label);
         this.isActive.set(result.isActive);

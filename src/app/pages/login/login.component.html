@@ -1,88 +1,113 @@
 <div class="login">
-    @if (isLoading) {
-    <p-progressspinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="transparent" animationDuration=".5s" />
-    } @else {
-    <form class="login-form">
-        <div>
-            <h2>Login</h2>
-        </div>
-        <div>
-            <p-floatlabel class="full-width" variant="on">
-                <input 
-                    pInputText 
-                    id="email" 
-                    type="email" 
-                    class="full-width" 
-                    [formControl]="emailFormControl" 
-                    [invalid]="emailFormControl.invalid && emailFormControl.touched" 
-                    autocomplete="email"
-                />
-                <label for="email">Email</label>
-            </p-floatlabel>
-            @if (emailFormControl.hasError('email') && !emailFormControl.hasError('required')) {
-                <p-message severity="error" size="small" variant="simple">
-                    Bitte geben Sie eine gültige E-Mail-Adresse ein
-                </p-message>
-            }
-            @if (emailFormControl.hasError('required') && emailFormControl.touched) {
-                <p-message severity="error" size="small" variant="simple">
-                    E-Mail ist erforderlich
-                </p-message>
-            }
-        </div>
-        <div class="full-width">
-            <p-floatlabel class="full-width mt-4" variant="on">
-                <input 
-                    pInputText 
-                    id="password" 
-                    type="password" 
-                    class="full-width" 
-                    [formControl]="passwordFormControl" 
-                    [invalid]="passwordFormControl.invalid && passwordFormControl.touched" 
-                    autocomplete="current-password"
-                />
-                <label for="password">Passwort</label>
-            </p-floatlabel>
-            @if (passwordFormControl.hasError('required') && passwordFormControl.touched) {
-                <p-message severity="error" size="small" variant="simple">
-                    Passwort ist erforderlich
-                </p-message>
-            }
-        </div>
+  <form
+    class="login-form"
+    (ngSubmit)="login()"
+  >
+    <div>
+      <h2>Login</h2>
+    </div>
+    <div>
+      <p-floatlabel
+        class="full-width"
+        variant="on"
+      >
+        <input
+          #email
+          pInputText
+          type="email"
+          class="full-width"
+          [formControl]="emailFormControl"
+          [invalid]="emailFormControl.invalid && emailFormControl.touched"
+          autocomplete="email"
+          (keydown.enter)="$event.preventDefault(); password.focus()"
+        />
+        <label for="email">Email</label>
+      </p-floatlabel>
+      @if (emailFormControl.hasError('email') && !emailFormControl.hasError('required')) {
+        <p-message
+          severity="error"
+          size="small"
+          variant="simple"
+        >
+          Bitte geben Sie eine gültige E-Mail-Adresse ein
+        </p-message>
+      }
+      @if (emailFormControl.hasError('required') && emailFormControl.touched) {
+        <p-message
+          severity="error"
+          size="small"
+          variant="simple"
+        >
+          E-Mail ist erforderlich
+        </p-message>
+      }
+    </div>
+    <div class="full-width">
+      <p-floatlabel
+        class="full-width mt-4"
+        variant="on"
+      >
+        <input
+          #password
+          pInputText
+          type="password"
+          class="full-width"
+          [formControl]="passwordFormControl"
+          [invalid]="passwordFormControl.invalid && passwordFormControl.touched"
+          autocomplete="current-password"
+          (keydown.enter)="$event.preventDefault(); login()"
+        />
+        <label for="password">Passwort</label>
+      </p-floatlabel>
+      @if (passwordFormControl.hasError('required') && passwordFormControl.touched) {
+        <p-message
+          severity="error"
+          size="small"
+          variant="simple"
+        >
+          Passwort ist erforderlich
+        </p-message>
+      }
+    </div>
 
-        @if (errorMessage) {
-        <p-message severity="error" size="small" variant="simple">{{errorMessage}}</p-message>
-        }
-        
-        @if (emailNotVerified) {
-        <div class="message warning">
-            <p><strong>E-Mail nicht verifiziert!</strong></p>
-            <p>Bitte überprüfen Sie Ihr E-Mail-Postfach und bestätigen Sie Ihre E-Mail-Adresse.</p>
-            @if (verificationEmailSent) {
-            <p class="success-text">✓ Verifikations-E-Mail wurde erneut gesendet!</p>
-            } @else {
-            <p-button 
-                label="Verifikations-E-Mail erneut senden" 
-                severity="secondary" 
-                [outlined]="true" 
-                (onClick)="resendVerificationEmail()" 
-            />
-            }
-        </div>
-        }
-
-        <div class="btn-container">
-            <p-button 
-                label="Einloggen" 
-                severity="primary" 
-                [disabled]="!emailFormControl.valid || passwordFormControl.value?.length === 0"
-                (onClick)="login()" 
-            />
-        </div>
-
-        <div class="link-container">
-            <a routerLink="/register">Noch kein Konto? Registrieren</a>
-        </div>
-    </form>
+    @if (errorMessage) {
+      <p-message
+        severity="error"
+        size="small"
+        variant="simple"
+      >
+        {{ errorMessage }}
+      </p-message>
     }
+
+    @if (emailNotVerified) {
+      <div class="message warning">
+        <p><strong>E-Mail nicht verifiziert!</strong></p>
+        <p>Bitte überprüfen Sie Ihr E-Mail-Postfach und bestätigen Sie Ihre E-Mail-Adresse.</p>
+        @if (verificationEmailSent) {
+          <p class="success-text">✓ Verifikations-E-Mail wurde erneut gesendet!</p>
+        } @else {
+          <p-button
+            label="Verifikations-E-Mail erneut senden"
+            severity="secondary"
+            [outlined]="true"
+            (onClick)="resendVerificationEmail()"
+          />
+        }
+      </div>
+    }
+
+    <div class="btn-container">
+      <p-button
+        label="Einloggen"
+        severity="primary"
+        [disabled]="!emailFormControl.valid || passwordFormControl.value?.length === 0"
+        (onClick)="login()"
+      />
+    </div>
+
+    <div class="link-container">
+      <a routerLink="/register">Noch kein Konto? Registrieren</a>
+    </div>
+  </form>
 </div>

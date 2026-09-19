@@ -1,18 +1,26 @@
-import type { CanActivateFn } from '@angular/router';
 import { inject } from '@angular/core';
+import type { CanActivateFn } from '@angular/router';
 import { Router } from '@angular/router';
+import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase-config';
 
-// eslint-disable-next-line unused-imports/no-unused-vars
-export const authGuard: CanActivateFn = (route, state) => {
+function getCurrentUser() {
+  return new Promise<typeof auth.currentUser>(resolve => {
+    const unsubscribe = onAuthStateChanged(auth, user => {
+      unsubscribe();
+      resolve(user);
+    });
+  });
+}
+
+export const authGuard: CanActivateFn = async () => {
   const router = inject(Router);
 
-  const user = auth.currentUser;
+  const user = auth.currentUser ?? (await getCurrentUser());
 
   if (user && user.emailVerified) {
     return true;
-  } else {
-    router.navigate(['/login']);
-    return false;
   }
+
+  return router.createUrlTree(['/login']);
 };

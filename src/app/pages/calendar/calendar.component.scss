@@ -1,61 +1,61 @@
 html,
 body {
-    height: 100%;
-    margin: 0;
-    padding: 10px;
-    font-family: Arial, sans-serif;
-    overflow-x: hidden;
-    touch-action: pan-y;
+  height: 100%;
+  margin: 0;
+  padding: 10px;
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+  touch-action: pan-y;
 }
 
 .container {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    background-color: var(--bg-primary);
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: var(--bg-primary);
 }
 
 .header {
-    display: flex;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 16px;
-    justify-content: space-between;
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 16px;
+  justify-content: space-between;
 
-    button {
-        flex-shrink: 0;
-    }
+  button {
+    flex-shrink: 0;
+  }
 }
 
 full-calendar {
-    width: 100%;
-    max-width: 100vw;
-    height: 90%;
+  width: 100%;
+  max-width: 100vw;
+  height: 90%;
 }
 
 :host ::ng-deep .fc-daygrid-week-number {
-    font-size: 0.65rem;
-    opacity: 0.6;
-    padding: 2px 4px;
+  font-size: 0.65rem;
+  opacity: 0.6;
+  padding: 2px 4px;
 }
 
 @media (max-width: 600px) {
-    .header {
-        justify-content: start;
-        gap: 12px;
-    }
+  .header {
+    justify-content: start;
+    gap: 12px;
+  }
 
-    .fc-toolbar-title {
-        font-size: 16px;
-    }
+  .fc-toolbar-title {
+    font-size: 16px;
+  }
 
-    .fc-button {
-        padding: 4px;
-    }
+  .fc-button {
+    padding: 4px;
+  }
 
-    .fc-daygrid-day {
-        min-height: 50px;
-    }
+  .fc-daygrid-day {
+    min-height: 50px;
+  }
 }

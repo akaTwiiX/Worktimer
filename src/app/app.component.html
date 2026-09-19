@@ -1,7 +1,11 @@
 @if (settingsService.isLoading()) {
-<div class="loading-overlay">
-    <p-progressSpinner />
-</div>
+  <div class="loading-overlay">
+    <p-progressspinner
+      strokeWidth="8"
+      fill="transparent"
+      animationDuration=".5s"
+    />
+  </div>
 } @else {
-<router-outlet />
+  <router-outlet />
 }

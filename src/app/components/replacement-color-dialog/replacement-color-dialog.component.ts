@@ -1,7 +1,7 @@
-import type { ThemeColors } from '../../color.themes';
 import { Component, inject, signal } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import type { ThemeColors } from '../../color.themes';
 
 @Component({
   selector: 'app-replacement-color-dialog',
@@ -16,7 +16,7 @@ export class ReplacementColorDialogComponent {
 
   newColorId = signal<number | null>(null);
 
-  data: { colors: ThemeColors[], originalColor: ThemeColors, };
+  data: { colors: ThemeColors[]; originalColor: ThemeColors };
 
   constructor() {
     this.data = this.config.data;

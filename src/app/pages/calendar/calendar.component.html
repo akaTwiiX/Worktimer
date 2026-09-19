@@ -1,16 +1,17 @@
 <div class="container">
-    <div class="header">
-        <p-button 
-            label="Einstellungen" 
-            icon="pi pi-cog" 
-            severity="secondary" 
-            [outlined]="true"
-            (onClick)="settings()" 
-        />
-    </div>
-    <full-calendar #calendar 
-        [options]="calendarOptions" 
-        (touchstart)="onTouchStart($event)"
-        (touchend)="onTouchEnd($event)">
-    </full-calendar>
+  <div class="header">
+    <p-button
+      label="Einstellungen"
+      icon="pi pi-cog"
+      severity="secondary"
+      [outlined]="true"
+      (onClick)="settings()"
+    />
+  </div>
+  <full-calendar
+    #calendar
+    [options]="calendarOptions"
+    (touchstart)="onTouchStart($event)"
+    (touchend)="onTouchEnd($event)"
+  ></full-calendar>
 </div>

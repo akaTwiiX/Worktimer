@@ -1,45 +1,44 @@
 .dialog {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  gap: 16px;
+
+  h3 {
+    text-align: center;
+  }
+
+  .radio-btn {
     display: flex;
-    flex-direction: column;
+    // flex-direction: column;
+    flex-wrap: wrap;
+    gap: 20px;
+
+    .radio-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  }
+
+  .btn-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .color {
+    height: 30px;
+    width: 50px;
+  }
+
+  .time-selector {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 8px;
-    gap: 16px;
 
-    h3 {
-        text-align: center;
+    span {
+      color: black;
     }
-
-    .radio-btn {
-        display: flex;
-        // flex-direction: column;
-        flex-wrap: wrap;
-        gap: 20px;
-
-        .radio-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-    }
-
-    .btn-container {
-        display: flex;
-        justify-content: space-between;
-
-    }
-
-    .color {
-        height: 30px;
-        width: 50px;
-    }
-
-    .time-selector {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 8px;
-
-        span {
-            color: black;
-        }
-    }
+  }
 }

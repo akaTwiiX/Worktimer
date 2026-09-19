@@ -10,7 +10,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
   styleUrl: './confirm-dialog.component.scss',
 })
 export class ConfirmDialogComponent {
-  data: { title: string, message: string, confirmText?: string, };
+  data: { title: string; message: string; confirmText?: string };
   public dialogRef = inject(DynamicDialogRef);
   public config = inject(DynamicDialogConfig);
 

@@ -1,63 +1,64 @@
 <p-toast position="top-center" />
 <div class="container">
-    <div class="header">
-        <p-button 
-            label="Zurück" 
-            icon="pi pi-arrow-left" 
-            severity="secondary" 
-            [text]="true"
-            (onClick)="back()" 
-        />
-        <p-button 
-            label="Ausloggen" 
-            severity="danger" 
-            [text]="true"
-            (onClick)="logout()" 
-        />
+  <div class="header">
+    <p-button
+      label="Zurück"
+      icon="pi pi-arrow-left"
+      severity="secondary"
+      [text]="true"
+      (onClick)="back()"
+    />
+    <p-button
+      label="Ausloggen"
+      severity="danger"
+      [text]="true"
+      (onClick)="logout()"
+    />
+  </div>
+  <div class="content">
+    <div class="theme-toggle">
+      <h3>Theme</h3>
+      <div class="theme-toggle-container">
+        <app-theme-toggle />
+      </div>
     </div>
-    <div class="content">
-        <div class="theme-toggle">
-            <h3>Theme</h3>
-            <div class="theme-toggle-container">
-                <app-theme-toggle/>
-            </div>
-        </div>
-        <div class="color-settings">
-            <h3>Theme Farben bearbeiten</h3>
-            <div class="color-picker-container">
-                @for (color of themeColors(); track color.id) {
-                    <app-color-picker 
-                        [(label)]="color.label" 
-                        [(color)]="color.value" 
-                        [(isActive)]="color.isActive" 
-                        (colorChange)="markDirty()" 
-                        (labelChange)="markDirty()"
-                        (isActiveChange)="markDirty()"
-                        (delete)="deleteColor(color)"/>
-                }
-                @if (themeColors().length < 10) {
-                <p-button 
-                    label="Farbe hinzufügen" 
-                    icon="pi pi-plus" 
-                    severity="contrast" 
-                    [outlined]="true"
-                    class="add-color-button" 
-                    (onClick)="addColor()" 
-                />
-            }
-            @if(hasChanges()){
-                <div class="margin-bottom-6rem"></div>
-            }
-            </div>
-            
-            <p-button 
-                [label]="isSaving() ? 'Speichern...' : 'Speichern'" 
-                severity="primary" 
-                class="save-button" 
-                [class.save-button-hidden]="!hasChanges()" 
-                (onClick)="saveSettings()" 
-                [disabled]="isSaving() || !hasChanges()" 
-            />
-        </div>
+    <div class="color-settings">
+      <h3>Theme Farben bearbeiten</h3>
+      <div class="color-picker-container">
+        @for (color of themeColors(); track color.id) {
+          <app-color-picker
+            [(label)]="color.label"
+            [(color)]="color.value"
+            [(isActive)]="color.isActive"
+            (colorChange)="markDirty()"
+            (labelChange)="markDirty()"
+            (isActiveChange)="markDirty()"
+            (delete)="deleteColor(color)"
+          />
+        }
+        @if (themeColors().length < 10) {
+          <p-button
+            label="Farbe hinzufügen"
+            icon="pi pi-plus"
+            severity="contrast"
+            [outlined]="true"
+            class="add-color-button"
+            (onClick)="addColor()"
+          />
+        }
+        @if (hasChanges()) {
+          <div class="margin-bottom-6rem"></div>
+        }
+      </div>
+
+      <p-button
+        [label]="isSaving() ? 'Speichern...' : 'Speichern'"
+        severity="primary"
+        class="save-button"
+        [class.save-button-hidden]="!hasChanges()"
+        (onClick)="saveSettings()"
+        [disabled]="isSaving() || !hasChanges()"
+      />
     </div>
+  </div>
 </div>

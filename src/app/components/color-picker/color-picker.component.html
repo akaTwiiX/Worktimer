@@ -1,41 +1,54 @@
-<div class="color-picker-container" [class.disabled]="disabled()" [style.--current-color]="color()">
-    <p-inputgroup>
-        <p-inputgroup-addon>
-        <div class="preview-container">
-            <div class="color-preview" [style.background-color]="color()"></div>
-            <input 
-                type="color" 
-                [value]="color()" 
-                (input)="color.set($any($event.target).value)"
-                [disabled]="disabled()"
-                class="hidden-color-input"
-            >
-        </div>
-    </p-inputgroup-addon>
-    <p-floatlabel class="color-picker-field" variant="on">
-        <input 
-            pInputText 
-            id="color-input"
-            [value]="color()" 
-            (input)="onTextChange($event)"
-            [disabled]="disabled()"
-            placeholder="#000000"
-            maxlength="7"
+<div
+  class="color-picker-container"
+  [class.disabled]="disabled()"
+  [style.--current-color]="color()"
+>
+  <p-inputgroup>
+    <p-inputgroup-addon>
+      <div class="preview-container">
+        <div
+          class="color-preview"
+          [style.background-color]="color()"
+        ></div>
+        <input
+          type="color"
+          [value]="color()"
+          (input)="color.set($any($event.target).value)"
+          [disabled]="disabled()"
+          class="hidden-color-input"
         />
-        <label for="color-input" (click)="openEditDialog()">{{ label() + (isActive() ? ' (Aktiv)' : ' (Inaktiv)') }}</label>
-        
-
-        </p-floatlabel>
-        <p-inputgroup-addon>
-            <p-button 
-                icon="pi pi-trash" 
-                [text]="true" 
-                [rounded]="true" 
-                severity="danger"
-                (onClick)="delete.emit()" 
-                [disabled]="disabled()" 
-                class="delete-btn" 
-            />
-        </p-inputgroup-addon>
-    </p-inputgroup>
+      </div>
+    </p-inputgroup-addon>
+    <p-floatlabel
+      class="color-picker-field"
+      variant="on"
+    >
+      <input
+        pInputText
+        id="color-input"
+        [value]="color()"
+        (input)="onTextChange($event)"
+        [disabled]="disabled()"
+        placeholder="#000000"
+        maxlength="7"
+      />
+      <label
+        for="color-input"
+        (click)="openEditDialog()"
+      >
+        {{ label() + (isActive() ? ' (Aktiv)' : ' (Inaktiv)') }}
+      </label>
+    </p-floatlabel>
+    <p-inputgroup-addon>
+      <p-button
+        icon="pi pi-trash"
+        [text]="true"
+        [rounded]="true"
+        severity="danger"
+        (onClick)="delete.emit()"
+        [disabled]="disabled()"
+        class="delete-btn"
+      />
+    </p-inputgroup-addon>
+  </p-inputgroup>
 </div>

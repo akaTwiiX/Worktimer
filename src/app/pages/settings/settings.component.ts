@@ -1,5 +1,4 @@
 import type { OnInit } from '@angular/core';
-import type { ThemeColors } from '../../color.themes';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -8,6 +7,7 @@ import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { ToastModule } from 'primeng/toast';
+import type { ThemeColors } from '../../color.themes';
 import { ColorPickerComponent } from '../../components/color-picker/color-picker.component';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 import { LabelEditDialogComponent } from '../../components/label-edit-dialog/label-edit-dialog.component';
@@ -18,7 +18,14 @@ import { SettingsService } from '../../settings.service';
 
 @Component({
   selector: 'app-settings',
-  imports: [ButtonModule, ThemeToggleComponent, ColorPickerComponent, FormsModule, ToastModule, DynamicDialogModule],
+  imports: [
+    ButtonModule,
+    ThemeToggleComponent,
+    ColorPickerComponent,
+    FormsModule,
+    ToastModule,
+    DynamicDialogModule,
+  ],
   providers: [MessageService, DialogService],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
@@ -29,7 +36,7 @@ export class SettingsComponent implements OnInit {
   isSaving = signal(false);
 
   hasChanges = computed(() => {
-    return (JSON.stringify(this.themeColors()) !== JSON.stringify(this.originalColors()));
+    return JSON.stringify(this.themeColors()) !== JSON.stringify(this.originalColors());
   });
 
   private settingsService = inject(SettingsService);
@@ -55,22 +62,28 @@ export class SettingsComponent implements OnInit {
 
   async saveSettings() {
     const user = auth.currentUser;
-    if (!user)
-      return;
+    if (!user) return;
 
     this.isSaving.set(true);
     try {
-      if (!this.hasChanges())
-        return;
+      if (!this.hasChanges()) return;
 
       await this.settingsService.saveSettings({
         themeColors: this.themeColors(),
       });
 
-      this.messageService.add({ severity: 'success', summary: 'Erfolg', detail: 'Einstellungen gespeichert' });
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Erfolg',
+        detail: 'Einstellungen gespeichert',
+      });
     } catch (error) {
       console.error('Error saving settings:', error);
-      this.messageService.add({ severity: 'error', summary: 'Fehler', detail: 'Fehler beim Speichern' });
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Fehler',
+        detail: 'Fehler beim Speichern',
+      });
     } finally {
       this.isSaving.set(false);
     }
@@ -78,7 +91,11 @@ export class SettingsComponent implements OnInit {
 
   async addColor() {
     if (this.themeColors().length >= 10) {
-      this.messageService.add({ severity: 'warn', summary: 'Limit erreicht', detail: 'Maximal 10 Farben erlaubt' });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Limit erreicht',
+        detail: 'Maximal 10 Farben erlaubt',
+      });
       return;
     }
 
@@ -90,7 +107,7 @@ export class SettingsComponent implements OnInit {
       closable: true,
     });
 
-    ref?.onClose.subscribe((result) => {
+    ref?.onClose.subscribe(result => {
       if (result) {
         const existingIds = this.themeColors().map(c => c.id);
         const newId = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].find(id => !existingIds.includes(id)) ?? 0;
@@ -109,17 +126,22 @@ export class SettingsComponent implements OnInit {
 
   async deleteColor(color: ThemeColors) {
     if (this.themeColors().length <= 1) {
-      this.messageService.add({ severity: 'info', detail: 'Mindestens eine Farbe muss erhalten bleiben' });
+      this.messageService.add({
+        severity: 'info',
+        detail: 'Mindestens eine Farbe muss erhalten bleiben',
+      });
       return;
     }
 
     const user = auth.currentUser;
-    if (!user)
-      return;
+    if (!user) return;
 
-    const confirmed = await this.confirmDialog('Farbe löschen', `Möchtest du die Farbe "${color.label}" wirklich löschen?`, 'Löschen');
-    if (!confirmed)
-      return;
+    const confirmed = await this.confirmDialog(
+      'Farbe löschen',
+      `Möchtest du die Farbe "${color.label}" wirklich löschen?`,
+      'Löschen',
+    );
+    if (!confirmed) return;
 
     this.replaceColorId(color);
     this.themeColors.set(this.themeColors().filter(c => c.id !== color.id));
@@ -128,8 +150,7 @@ export class SettingsComponent implements OnInit {
 
   async replaceColorId(themeColor: ThemeColors) {
     const user = auth.currentUser;
-    if (!user)
-      return;
+    if (!user) return;
     const eventsRef = collection(db, user.uid);
     const q = query(eventsRef, where('backgroundColor', '==', themeColor.id));
     const querySnapshot = await getDocs(q);
@@ -145,22 +166,28 @@ export class SettingsComponent implements OnInit {
         data: { colors: otherColors, originalColor: themeColor },
       });
 
-      replacementId = await new Promise<number | undefined>((resolve) => {
+      replacementId = await new Promise<number | undefined>(resolve => {
         ref?.onClose.subscribe(res => resolve(res));
       });
 
       if (replacementId === undefined) {
         this.themeColors.set([...this.themeColors(), themeColor]);
-        this.messageService.add({ severity: 'info', detail: `Farbe ${themeColor.label} nicht gelöscht` });
+        this.messageService.add({
+          severity: 'info',
+          detail: `Farbe ${themeColor.label} nicht gelöscht`,
+        });
         return;
       }
 
       const batch = writeBatch(db);
-      querySnapshot.forEach((eventDoc) => {
+      querySnapshot.forEach(eventDoc => {
         batch.update(doc(db, user.uid, eventDoc.id), { backgroundColor: replacementId });
       });
       await batch.commit();
-      this.messageService.add({ severity: 'success', detail: `${querySnapshot.size} Zeiten wurden auf die neue Farbe umgestellt` });
+      this.messageService.add({
+        severity: 'success',
+        detail: `${querySnapshot.size} Zeiten wurden auf die neue Farbe umgestellt`,
+      });
     }
   }
 
@@ -169,9 +196,12 @@ export class SettingsComponent implements OnInit {
   }
 
   async logout() {
-    const confirmed = await this.confirmDialog('Ausloggen', 'Möchtest du dich wirklich ausloggen?', 'Ausloggen');
-    if (!confirmed)
-      return;
+    const confirmed = await this.confirmDialog(
+      'Ausloggen',
+      'Möchtest du dich wirklich ausloggen?',
+      'Ausloggen',
+    );
+    if (!confirmed) return;
 
     await auth.signOut();
     this.router.navigate(['/login']);
@@ -179,12 +209,15 @@ export class SettingsComponent implements OnInit {
 
   async back() {
     if (this.hasChanges()) {
-      const confirmed = await this.confirmDialog('Änderungen verwerfen', 'Möchtest du die Änderungen wirklich verwerfen?', 'Verwerfen');
-      if (!confirmed)
-        return;
+      const confirmed = await this.confirmDialog(
+        'Änderungen verwerfen',
+        'Möchtest du die Änderungen wirklich verwerfen?',
+        'Verwerfen',
+      );
+      if (!confirmed) return;
     }
 
-    this.router.navigate(['/calendar']);
+    this.router.navigate(['/home']);
   }
 
   async confirmDialog(title: string, message: string, confirmText: string) {
@@ -199,7 +232,7 @@ export class SettingsComponent implements OnInit {
       },
     });
 
-    const confirmed = await new Promise<boolean>((resolve) => {
+    const confirmed = await new Promise<boolean>(resolve => {
       ref?.onClose.subscribe(res => resolve(!!res));
     });
 

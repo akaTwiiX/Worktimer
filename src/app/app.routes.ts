@@ -4,7 +4,13 @@ import { authGuard } from './auth.guard';
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./pages/calendar/calendar.component').then(m => m.CalendarComponent),
+    redirectTo: 'home',
+    pathMatch: 'full',
+  },
+  {
+    path: 'home',
+    loadComponent: () =>
+      import('./pages/calendar/calendar.component').then(m => m.CalendarComponent),
     canActivate: [authGuard],
   },
   {
@@ -13,11 +19,13 @@ export const routes: Routes = [
   },
   {
     path: 'register',
-    loadComponent: () => import('./pages/register/register.component').then(m => m.RegisterComponent),
+    loadComponent: () =>
+      import('./pages/register/register.component').then(m => m.RegisterComponent),
   },
   {
     path: 'settings',
-    loadComponent: () => import('./pages/settings/settings.component').then(m => m.SettingsComponent),
+    loadComponent: () =>
+      import('./pages/settings/settings.component').then(m => m.SettingsComponent),
     canActivate: [authGuard],
   },
   {

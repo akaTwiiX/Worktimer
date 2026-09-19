@@ -1,4 +1,3 @@
-import type { ThemeColors } from '../../color.themes';
 import { Component, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -7,6 +6,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import type { ThemeColors } from '../../color.themes';
 import { TimeFormatDirective } from '../../directives/time-format.directive';
 import { SettingsService } from '../../settings.service';
 
@@ -49,10 +49,8 @@ export class EventDialogComponent {
       const isTimeA = isTime(a.label);
       const isTimeB = isTime(b.label);
 
-      if (!isTimeA && isTimeB)
-        return -1;
-      if (isTimeA && !isTimeB)
-        return 1;
+      if (!isTimeA && isTimeB) return -1;
+      if (isTimeA && !isTimeB) return 1;
 
       if (!isTimeA && !isTimeB) {
         return a.label.localeCompare(b.label);
@@ -118,6 +116,6 @@ export class EventDialogComponent {
   }
 
   isDisabled(): boolean {
-    return this.isVisible && (this.eventData.title.trim().length === 0);
+    return this.isVisible && this.eventData.title.trim().length === 0;
   }
 }

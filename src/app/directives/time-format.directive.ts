@@ -11,7 +11,7 @@ export class TimeFormatDirective implements OnChanges {
   @Input('appTimeFormat') timeString: string | undefined;
 
   ngOnChanges(changes: SimpleChanges): void {
-    if ((changes as { timeString?: string, }).timeString) {
+    if ((changes as { timeString?: string }).timeString) {
       this.format();
     }
   }

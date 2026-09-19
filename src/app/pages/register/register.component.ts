@@ -36,7 +36,11 @@ export class RegisterComponent {
   private settingsService = inject(SettingsService);
 
   async register() {
-    if (!this.emailFormControl.value || !this.passwordFormControl.value || !this.passwordConfirmFormControl.value) {
+    if (
+      !this.emailFormControl.value ||
+      !this.passwordFormControl.value ||
+      !this.passwordConfirmFormControl.value
+    ) {
       return;
     }
 
@@ -50,7 +54,11 @@ export class RegisterComponent {
       this.errorMessage = '';
       this.successMessage = '';
 
-      const userCredential = await createUserWithEmailAndPassword(auth, this.emailFormControl.value, this.passwordFormControl.value);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        this.emailFormControl.value,
+        this.passwordFormControl.value,
+      );
       const user = userCredential.user;
       console.log('Successfully registered:', user);
 
@@ -59,7 +67,8 @@ export class RegisterComponent {
 
       await this.settingsService.setDefaultSettings(user);
 
-      this.successMessage = 'Registrierung erfolgreich! Bitte überprüfen Sie Ihre E-Mails zur Verifizierung.';
+      this.successMessage =
+        'Registrierung erfolgreich! Bitte überprüfen Sie Ihre E-Mails zur Verifizierung.';
 
       setTimeout(() => this.router.navigate(['/login']), 5000);
     } catch (error: any) {

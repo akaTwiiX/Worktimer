@@ -1,7 +1,16 @@
 <div class="confirm-dialog">
-    <p>{{ data.message }}</p>
-    <div class="actions">
-        <p-button label="Abbrechen" severity="secondary" [outlined]="true" (onClick)="onCancel()" />
-        <p-button [label]="data.confirmText || 'OK'" severity="danger" (onClick)="onConfirm()" />
-    </div>
+  <p>{{ data.message }}</p>
+  <div class="actions">
+    <p-button
+      label="Abbrechen"
+      severity="secondary"
+      [outlined]="true"
+      (onClick)="onCancel()"
+    />
+    <p-button
+      [label]="data.confirmText || 'OK'"
+      severity="danger"
+      (onClick)="onConfirm()"
+    />
+  </div>
 </div>
